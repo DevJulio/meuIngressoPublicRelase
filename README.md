@@ -1,5 +1,8 @@
 # Getting Started with Create React App
 
+palete: https://coolors.co/palette/8ecae6-219ebc-023047-ffb703-fb8500
+inspiration: https://dribbble.com/shots/19970474-Event-Mobile-App
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
