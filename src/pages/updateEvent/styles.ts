@@ -172,3 +172,9 @@ margin-bottom: 5vh;
 padding: 12px;
 padding-bottom: 5vh;
 `;
+export const Banner = styled.img`
+  background-size: cover;
+  width: 100%;
+  align-self: center;
+  display: flex;
+`;

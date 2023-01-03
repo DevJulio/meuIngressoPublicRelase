@@ -19,5 +19,6 @@ export type TCardProps = {
   month: string;
   year: string;
   ticketColor: string
+  calendar: date
   prices: TPrices[]
 }

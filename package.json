@@ -48,7 +48,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "set NODE_ENV=dev &&  react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -74,6 +74,7 @@
   "devDependencies": {
     "@capacitor/cli": "4.6.1",
     "@types/color": "^3.0.3",
+    "@types/dotenv": "^8.2.0",
     "@types/react-burger-menu": "^2.8.3",
     "@types/react-calendar": "^3.9.0",
     "@types/react-color": "^3.0.6",

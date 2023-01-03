@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/header";
 import { theme } from "../../theme/theme";
 import * as Styled from "./styles";
@@ -17,10 +17,12 @@ import { SketchPicker } from "react-color";
 
 import dayjs from "dayjs";
 import { TPrices } from "../../components/ticket/card";
+import eventsProps from "../home/eventProps";
 
 // import { useNavigate } from "react-router-dom";
 
 const UpdateEvent: React.FC = () => {
+  const [eventId, setEventId] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [place, setPlace] = useState<string>("");
   const [category, setCategory] = useState<string>("");
@@ -29,6 +31,10 @@ const UpdateEvent: React.FC = () => {
   const [ticketColor, setTicketColor] = useState<string>("#FB8500");
   const [pictureUrl, setpictureUrl] = useState<File>();
   const [adicionalPictureUrl, setAdicionalPictureUrl] = useState<File>();
+  const [LocalPictureUrl, setLocalPictureUrl] = useState<string>();
+  const [LocalAdicionalPictureUrl, setLocalAdicionalPictureUrl] =
+    useState<string>();
+
   const [calendar, setCalendar] = useState(new Date());
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,9 +46,34 @@ const UpdateEvent: React.FC = () => {
     },
   ]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const eventIdLocal = localStorage.getItem("eventId");
+      if (eventIdLocal) {
+        setEventId(eventIdLocal);
+        eventsProps.map((eventItem) => {
+          if (eventIdLocal === eventItem.id) {
+            setTitle(eventItem.title);
+            setPlace(eventItem.place);
+            setCategory(eventItem.category);
+            setDescription(eventItem.description ? eventItem.description : "");
+            setCalendar(eventItem.calendar);
+            setTime(dayjs(eventItem.time, format));
+            setTicketColor(eventItem.ticketColor);
+            setPrices(eventItem.prices);
+            setLocalPictureUrl(eventItem.pictureUrl);
+            setLocalAdicionalPictureUrl(eventItem.adicionalPictureUrl);
+          }
+        });
+      }
+      // const res = await api.get<TPassport>(`/getTicketData/${docId}`);
+      // res && setPassaporteData(res.data);
+    };
+    fetchData();
+  }, []);
+
   const { TextArea } = AntdInput;
   const options = ["Músical", "Educacional", "Esportivo", "Religioso"];
-  // const navigate = useNavigate();
   const format = "HH:mm";
 
   const handleClose = () => {
@@ -79,7 +110,6 @@ const UpdateEvent: React.FC = () => {
         pictureUrl,
         adicionalPictureUrl,
       };
-      console.log(ticket);
       setLoading(true);
     }
   };
@@ -159,12 +189,17 @@ const UpdateEvent: React.FC = () => {
               </Styled.MainContainer>
               <Styled.Aux>
                 <Styled.FormContainer>
-                  <Input Label={"Título do evento"} setValue={setTitle}></Input>
+                  <Input
+                    Label={"Título do evento"}
+                    setValue={setTitle}
+                    value={title}
+                  />
                 </Styled.FormContainer>
                 <Styled.FormContainer>
                   <Input
                     setValue={setPlace}
                     Label={"Endereço do evento"}
+                    value={place}
                   ></Input>
                 </Styled.FormContainer>
                 <Styled.FormContainer>
@@ -222,12 +257,21 @@ const UpdateEvent: React.FC = () => {
                     />
                   </Styled.Centralize>
                 </Styled.FormContainer>
+
                 <Styled.FormContainer>
                   <Styled.ItemSpan>
                     Carregue o banner principal do evento (Aparecerá na
                     listagem)
                   </Styled.ItemSpan>
                   <Styled.Centralize>
+                    <Styled.FormContainer>
+                      <Styled.ItemSpan>Banner Atual:</Styled.ItemSpan>
+                      <Styled.Banner src={LocalPictureUrl} alt="" />
+                    </Styled.FormContainer>
+                  </Styled.Centralize>
+
+                  <Styled.FormContainer>
+                    <Styled.ItemSpan>Alterar banner:</Styled.ItemSpan>
                     <Styled.FileInput
                       type="file"
                       id="mainBanner"
@@ -235,13 +279,22 @@ const UpdateEvent: React.FC = () => {
                         changeInput(e, true);
                       }}
                     />
-                  </Styled.Centralize>
+                  </Styled.FormContainer>
                 </Styled.FormContainer>
+
                 <Styled.FormContainer>
                   <Styled.ItemSpan>
                     Carregue o banner secundário (Maior e mais detalhes)
                   </Styled.ItemSpan>
                   <Styled.Centralize>
+                    <Styled.FormContainer>
+                      <Styled.ItemSpan>Banner Atual:</Styled.ItemSpan>
+                      <Styled.Banner src={LocalAdicionalPictureUrl} alt="" />
+                    </Styled.FormContainer>
+                  </Styled.Centralize>
+
+                  <Styled.FormContainer>
+                    <Styled.ItemSpan>Alterar banner:</Styled.ItemSpan>
                     <Styled.FileInput
                       type="file"
                       id="mainBanner"
@@ -249,8 +302,9 @@ const UpdateEvent: React.FC = () => {
                         changeInput(e, false);
                       }}
                     />
-                  </Styled.Centralize>
+                  </Styled.FormContainer>
                 </Styled.FormContainer>
+
                 <Styled.FormContainer
                   style={{
                     placeSelf: "center",
@@ -323,7 +377,7 @@ const UpdateEvent: React.FC = () => {
               <Styled.Aux>
                 <ButtonPrimary
                   bgColor={theme.colors.green.normal}
-                  label={"Finalizar cadastro"}
+                  label={"Alterar cadastro"}
                   action={cadastrar}
                 />
               </Styled.Aux>

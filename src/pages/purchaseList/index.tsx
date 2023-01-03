@@ -34,7 +34,8 @@ const PurchaseList: React.FC = () => {
     setAccessQty(accessCount);
     setMoney(count * price);
   };
-
+  // label: "Ver todos",
+  //   value: "all",
   return (
     <>
       <Header />

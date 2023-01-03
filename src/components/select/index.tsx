@@ -21,7 +21,6 @@ const Select: React.FC<Props> = ({ setValue, label, options }) => {
         <Styled.Select
           name="select"
           onChange={(e) => {
-            console.log(e.target.value);
             setValue(e.target.value);
           }}
         >

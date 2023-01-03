@@ -62,13 +62,24 @@ const Ticket: React.FC<ITicket> = ({ data, isAdm = false }) => {
               )}
             </Styled.TxtContainer>
             <Styled.BtnsContainer>
-              <ButtonPrimary
-                bgColor={theme.colors.green.normal}
-                label={"Continuar"}
-                action={() => {
-                  disableEvent();
-                }}
-              />
+              {data.isEnabled && (
+                <ButtonPrimary
+                  bgColor={theme.colors.green.normal}
+                  label={"Continuar"}
+                  action={() => {
+                    disableEvent();
+                  }}
+                />
+              )}
+              {!data.isEnabled && (
+                <ButtonPrimary
+                  bgColor={theme.colors.green.normal}
+                  label={"Continuar"}
+                  action={() => {
+                    enableEvent();
+                  }}
+                />
+              )}
               <ButtonPrimary
                 label={"Cancelar"}
                 action={() => {
