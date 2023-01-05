@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/header";
 import lupa from "../../assets/icons/lupa.png";
 import * as Styled from "./styles";
@@ -15,27 +15,53 @@ const PurchaseList: React.FC = () => {
   const [qty, setQty] = useState<number>(0);
   const [accessqty, setAccessQty] = useState<number>(0);
 
-  const handleChange = (type: string) => {
-    setTitle(type);
-    setMoney(0);
+  useEffect(() => {
+    const fetchData = async () => {};
+    firstChild();
+    fetchData();
+  }, []);
+
+  const firstChild = () => {
+    setTitle("todos ingressos");
     let count = 0;
     let accessCount = 0;
     let price = 0;
     purchaseProps.map((purchase) => {
-      if (purchase.buyDetails.title === type) {
-        count++;
-        price = purchase.buyDetails.price;
-      }
+      count++;
+      price = price + purchase.buyDetails.price;
       if (purchase.isUsed) {
         accessCount++;
       }
     });
     setQty(count);
     setAccessQty(accessCount);
-    setMoney(count * price);
+    setMoney(price);
   };
-  // label: "Ver todos",
-  //   value: "all",
+
+  const handleChange = (type: string) => {
+    if (type !== "all") {
+      setTitle(type);
+      setMoney(0);
+      let count = 0;
+      let accessCount = 0;
+      let price = 0;
+      purchaseProps.map((purchase) => {
+        if (purchase.buyDetails.title === type) {
+          count++;
+          price = purchase.buyDetails.price;
+        }
+        if (purchase.isUsed) {
+          accessCount++;
+        }
+      });
+      setQty(count);
+      setAccessQty(accessCount);
+      setMoney(count * price);
+    } else {
+      firstChild();
+    }
+  };
+
   return (
     <>
       <Header />
@@ -55,6 +81,9 @@ const PurchaseList: React.FC = () => {
         >
           <option selected disabled value="0">
             Escolha o tipo de ingresso:
+          </option>
+          <option key={"all"} value={"all"}>
+            Ver todos
           </option>
           {eventsProps[0].prices.map((fbb) => (
             <option key={fbb.title} value={fbb.title}>

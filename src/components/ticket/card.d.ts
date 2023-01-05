@@ -2,6 +2,7 @@ export type TPrices = {
   title: string;
   price: number;
   description: string;
+  isComplete: boolean
 }
 
 export type TCardProps = {

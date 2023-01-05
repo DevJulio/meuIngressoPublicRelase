@@ -12,6 +12,9 @@ import eventsProps from "./eventProps";
 import Footer from "../../components/footer";
 import categories from "./categories";
 import { TCardProps } from "../../components/ticket/card";
+import api from "../../services/api";
+import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 
 type TCoords = {
   latitude: number;
@@ -24,13 +27,41 @@ const Home: React.FC = () => {
     longitude: 0,
   });
 
+  const navigate = useNavigate();
   const [city, setCity] = useState("Iporá, Goiás, Brasil.");
   const [allEvents, setAllEvents] = useState<TCardProps[]>([]);
   const [eventsToBeRender, setEventsToBeRender] = useState<TCardProps[]>([]);
 
   useEffect(() => {
-    setAllEvents(eventsProps);
-    setEventsToBeRender(eventsProps);
+    const fetchData = async () => {
+      try {
+        const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
+        api.defaults.headers["Authorization"] = `${tokenObj}`;
+        const response = await api.get("/getAllEvents");
+        if (response.status === 200) {
+          if (response.status === 200) {
+            const parsed = response.data.map((event: any) => {
+              return {
+                id: event.id,
+                ...event.data,
+              };
+            });
+            setAllEvents(parsed as TCardProps[]);
+            setEventsToBeRender(parsed as TCardProps[]);
+          }
+        }
+      } catch (error: any) {
+        if (error.response.status === 401) {
+          // setUploading(false);
+          message.error("Sessão expirada, faça login novamente!");
+          setTimeout(() => {
+            navigate("/adm/login");
+          }, 4000);
+        }
+        message.error("Verifique os dados e tente novamente!");
+      }
+    };
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -60,7 +91,6 @@ const Home: React.FC = () => {
     // }
   }, [location]);
   const handleChange = (type: string) => {
-    console.log(type);
     let events: TCardProps[] = [];
     allEvents.map((event) => {
       if (event.category === type) {

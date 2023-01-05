@@ -22,12 +22,14 @@ const eventsProps: TCardProps[] = [
     prices: [
       {
         title: "Camarote",
+        isComplete: true,
         price: 500.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
       },
       {
         title: "Pista",
+        isComplete: false,
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -53,12 +55,14 @@ const eventsProps: TCardProps[] = [
     prices: [
       {
         title: "Camarote",
+        isComplete: false,
         price: 500.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
       },
       {
         title: "Pista",
+        isComplete: false,
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -85,12 +89,14 @@ const eventsProps: TCardProps[] = [
     prices: [
       {
         title: "Camarote",
+        isComplete: false,
         price: 400.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
       },
       {
         title: "Pista",
+        isComplete: false,
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -116,12 +122,14 @@ const eventsProps: TCardProps[] = [
     prices: [
       {
         title: "Camarote",
+        isComplete: false,
         price: 500.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
       },
       {
         title: "Pista",
+        isComplete: false,
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -147,12 +155,14 @@ const eventsProps: TCardProps[] = [
     prices: [
       {
         title: "Camarote",
+        isComplete: false,
         price: 500.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
       },
       {
         title: "Pista",
+        isComplete: false,
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -178,12 +188,14 @@ const eventsProps: TCardProps[] = [
     prices: [
       {
         title: "Camarote",
+        isComplete: false,
         price: 500.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
       },
       {
         title: "Pista",
+        isComplete: false,
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",

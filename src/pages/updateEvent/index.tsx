@@ -43,6 +43,7 @@ const UpdateEvent: React.FC = () => {
       description: "",
       price: 0,
       title: "",
+      isComplete: false,
     },
   ]);
 
@@ -119,7 +120,10 @@ const UpdateEvent: React.FC = () => {
   console.log(time.$d);
 
   const handleAddField = () => {
-    setPrices([...prices, { description: "", price: 0, title: "" }]);
+    setPrices([
+      ...prices,
+      { description: "", price: 0, title: "", isComplete: false },
+    ]);
   };
   const handleFieldChange = (
     index: number,

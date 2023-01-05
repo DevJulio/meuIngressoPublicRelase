@@ -22,16 +22,19 @@ const Ticket: React.FC<ITicket> = ({ data, isAdm = false }) => {
   };
 
   const disableEvent = async () => {
-    console.log(eventToBeDisabled);
     message.success("Desativado com sucesso!");
     handleClose();
   };
 
   const enableEvent = async () => {
-    console.log(eventToBeDisabled);
     message.success("Ativado com sucesso!");
     handleClose();
   };
+
+  const formatedData =
+    new Date(data.time).getHours().toString().padStart(2, "0") +
+    ":" +
+    new Date(data.time).getMinutes().toString().padStart(2, "0");
 
   return (
     <>
@@ -92,6 +95,7 @@ const Ticket: React.FC<ITicket> = ({ data, isAdm = false }) => {
       )}
       <Styled.SpanAndIcon
         onClick={() => {
+          localStorage.setItem("eventId", data.id);
           navigate("/detalhes");
         }}
       >
@@ -116,15 +120,19 @@ const Ticket: React.FC<ITicket> = ({ data, isAdm = false }) => {
         </Styled.SpacerCategory>
         <Styled.Banner src={data.pictureUrl} />
         <Styled.Container>
-          <span>{data.title}</span>
+          <Styled.EvntTitle>{data.title}</Styled.EvntTitle>
+          <Styled.EvntTitleAux>A partir de: </Styled.EvntTitleAux>
           <Styled.ContainerRow>
-            <span>{data.place}</span>
+            <span style={{ color: theme.colors.blue.palete }}>
+              {data.place}
+            </span>
             <span
               style={{
                 padding: "1vw",
               }}
             ></span>
-            <span>{data.time}</span>
+
+            <Styled.EvntTime>{formatedData}</Styled.EvntTime>
           </Styled.ContainerRow>
           <Styled.PriceSpan>R${data.price}</Styled.PriceSpan>
         </Styled.Container>

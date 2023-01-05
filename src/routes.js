@@ -19,7 +19,7 @@ function RoutesList() {
         <Route path="/detalhes" element={<Detail />} />
         <Route path="/compra" element={<Buy />} />
         <Route path="/ticket" element={<TickeReady />} />
-        <Route path="/adm1n/login" element={<Login />} />
+        <Route path="/adm/login" element={<Login />} />
         <Route path="/adm" element={<Adm />} />
         <Route path="/adm/criar-evento" element={<CreateEvent />} />
         <Route path="/adm/lista-de-compras" element={<PurchaseList />} />

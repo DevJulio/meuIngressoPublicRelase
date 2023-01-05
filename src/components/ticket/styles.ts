@@ -5,6 +5,8 @@ export const SpanAndIcon = styled.div`
   flex-direction: column;
   padding-top: 2vh;
   padding-bottom: 1vh;
+  min-width: 390px;
+  max-width: 390px;
 `;
 export const Container = styled.div`
   display: flex;
@@ -13,7 +15,7 @@ export const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.white.normal};
   width: 86%;
   flex-direction: column;
-   align-self: center;
+  align-self: center;
   padding: 1vh;
   justify-content: center;
   border-bottom-right-radius: 25px;
@@ -24,7 +26,6 @@ export const Container = styled.div`
   -webkit-backdrop-filter: blur(20px);
   color: ${({ theme }) => theme.colors.white.normal};
   font-family: ${({ theme }) => theme.fonts.secundary};
-
 `;
 export const SpanAux = styled.span`
   color: ${({ theme }) => theme.colors.blue.palete};
@@ -40,9 +41,9 @@ export const SpanAux = styled.span`
   }
 `;
 export const Span = styled.span`
-margin-left: 8vw;
-padding-bottom: 1vh;
-margin-top: 2vh;
+  margin-left: 8vw;
+  padding-bottom: 1vh;
+  margin-top: 2vh;
 `;
 export const LogoImg = styled.img`
   padding-top: 1.5vh;
@@ -102,31 +103,56 @@ export const SpacerCategory = styled.div`
 `;
 export const ContainerRow = styled.div`
   display: flex;
+  margin-top: 1vh;
   flex-direction: row;
-  `;
+  margin-bottom: 1vh;
+`;
 export const ContainerCol = styled.div`
   display: flex;
   flex-direction: column;
-  `;
+`;
 
 export const PriceSpan = styled.span`
   display: flex;
   flex-direction: column;
   position: absolute;
   place-self: end;
-  margin-right: 2vw;
-  margin-top: 0vh;
+  margin-top: -1.8vh;
   align-items: center;
-  font-size: ${({ theme }) => theme.fontSize.md};
-  color: ${({ theme }) => theme.colors.blue.palete};
-  font-family: ${({ theme }) => theme.fonts.secundary};
+  font-size: 1.25em;
+  color: #023047;
+  font-family: RobotoRegular, sans-serif;
   border-radius: 25px;
-  background-color: ${({ theme }) => theme.colors.white.normal};
-  padding: 1vh;
-  `;
+  background-color: #ffffff;
+  padding: 5px;
+  margin-bottom: 2.6vh;
+  margin-right: 2.9vw;
+`;
 
+export const EvntTitle = styled.span`
+  color: ${({ theme }) => theme.colors.blue.palete};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.md2};
+  width: 95%;
+`;
+export const EvntTitleAux = styled.span`
+  color: ${({ theme }) => theme.colors.blue.palete};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  position: absolute;
+  margin-left: 46vw;
+  margin-top: -4vh;
+`;
 
-
+export const EvntTime = styled.span`
+  color: ${({ theme }) => theme.colors.blue.palete};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.md2};
+  position: absolute;
+  place-self: center;
+  margin-left: 69.5vw;
+  margin-top: 6px;
+`;
 
 export const BtnContainer = styled.div`
   display: flex;
@@ -145,7 +171,7 @@ export const SpanTitleAux = styled.span`
   font-size: ${({ theme }) => theme.fontSize.md};
   width: 95%;
   padding-top: 3vh;
-  `;
+`;
 
 export const TxtContainer = styled.div`
   padding-bottom: 20px;

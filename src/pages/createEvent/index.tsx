@@ -11,85 +11,123 @@ import Select from "../../components/select";
 import "react-credit-cards/es/styles-compiled.css";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { TimePicker } from "antd";
+import { message, TimePicker } from "antd";
 import { Input as AntdInput } from "antd";
 import { SketchPicker } from "react-color";
-
 import dayjs from "dayjs";
 import { TPrices } from "../../components/ticket/card";
-
-// import { useNavigate } from "react-router-dom";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import api from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 const CreateEvent: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [place, setPlace] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [time, setTime] = useState<any>("");
+  const [time, setTime] = useState<any>();
   const [description, setDescription] = useState<string>("");
   const [ticketColor, setTicketColor] = useState<string>("#FB8500");
   const [pictureUrl, setpictureUrl] = useState<File>();
   const [adicionalPictureUrl, setAdicionalPictureUrl] = useState<File>();
   const [calendar, setCalendar] = useState(new Date());
+  const [calendarFinish, setCalendarFinish] = useState(new Date());
+  const [finish, setFinish] = useState<boolean>(false);
+  const [uploading, setUploading] = useState<boolean>(false);
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [prices, setPrices] = useState<TPrices[]>([
     {
       description: "",
       price: 0,
       title: "",
+      isComplete: false,
     },
   ]);
 
   const { TextArea } = AntdInput;
   const options = ["Músical", "Educacional", "Esportivo", "Religioso"];
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const format = "HH:mm";
 
   const handleClose = () => {
-    setLoading(false);
-  };
-  const checkPrices = () => {
-    prices.forEach((element) => {
-      if (!element.description || !element.title || !element.price) {
-        return false;
-      }
-    });
-    return true;
+    setFinish(false);
+    // navigate("/adm/lista-de-eventos");
   };
 
+  const handleCloseLoading = () => {
+    setUploading(false);
+  };
+  const checkPrices = () => {
+    let ret = true;
+    prices.forEach((element) => {
+      if (!element.description || !element.title || !element.price) {
+        ret = false;
+      }
+    });
+    return ret;
+  };
+  let imageCounter = 0;
+  let localPicUrl = "";
+  let LocaladicionalPictureUrl = "";
+
   const cadastrar = async () => {
-    if (
-      title &&
-      place &&
-      time &&
-      description &&
-      ticketColor &&
-      pictureUrl &&
-      checkPrices() &&
-      adicionalPictureUrl
-    ) {
-      const ticket = {
-        title,
-        place,
-        prices,
-        time,
-        category: category ? category : options[0],
-        description,
-        ticketColor,
-        pictureUrl,
-        adicionalPictureUrl,
-      };
-      console.log(ticket);
-      setLoading(true);
+    const day = calendar.getDate();
+    const month = calendar.getMonth();
+    const year = calendar.getFullYear();
+    const userId: any = sessionStorage.getItem("@AuthFirebase:user");
+    const ticket = {
+      title,
+      place,
+      prices,
+      time: time.$d,
+      category: category ? category : options[0],
+      day,
+      month,
+      year,
+      description,
+      ticketColor,
+      pictureUrl: localPicUrl,
+      status: "active",
+      calendarFinish,
+      adicionalPictureUrl: LocaladicionalPictureUrl,
+      userId: JSON.parse(userId).uid,
+      createdAt: new Date(),
+    };
+    try {
+      const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
+      api.defaults.headers["Authorization"] = `${tokenObj}`;
+      const response = await api.post("/addEvent", ticket);
+      if (response.status === 200) {
+        setUploading(false);
+        setFinish(true);
+      }
+    } catch (error: any) {
+      if (error.response.status === 401) {
+        setUploading(false);
+        message.error("Sessão expirada, faça login novamente!");
+        setTimeout(() => {
+          navigate("/adm/login");
+        }, 4000);
+      }
+      message.error("Verifique os dados e tente novamente!");
     }
   };
   const handleCalendar = (date: Date) => {
     setCalendar(date);
   };
-  console.log(time.$d);
+  const handleCalendarFinish = (date: Date) => {
+    setCalendarFinish(date);
+  };
 
   const handleAddField = () => {
-    setPrices([...prices, { description: "", price: 0, title: "" }]);
+    setPrices([
+      ...prices,
+      { description: "", price: 0, title: "", isComplete: false },
+    ]);
   };
   const handleFieldChange = (
     index: number,
@@ -107,6 +145,10 @@ const CreateEvent: React.FC = () => {
           break;
         case "description":
           values[index].description = event.target.value;
+          setPrices(values);
+          break;
+        case "isComplete":
+          values[index].isComplete = event.target.checked;
           setPrices(values);
           break;
         default:
@@ -134,11 +176,112 @@ const CreateEvent: React.FC = () => {
       setAdicionalPictureUrl(localFile);
     }
   };
+
+  const addImg = async (file: File | null) => {
+    const validatedFields = validateFields();
+    const prices = checkPrices();
+    if (file && prices && !validatedFields.length) {
+      setUploading(true);
+      const storage = getStorage();
+      const storageRef = ref(storage, "user" + Math.random() * 100);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          // console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+          }
+        },
+        (error) => {
+          console.error(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            if (imageCounter === 0) {
+              localPicUrl = downloadURL;
+              if (adicionalPictureUrl) {
+                imageCounter++;
+                addImg(adicionalPictureUrl);
+              }
+            }
+            if (imageCounter === 1) {
+              LocaladicionalPictureUrl = downloadURL;
+              imageCounter++;
+            }
+            if (imageCounter === 2) {
+              imageCounter++;
+              cadastrar();
+            }
+          });
+        }
+      );
+    } else {
+      validatedFields.forEach((field) => {
+        message.error(field);
+      });
+      if (!prices) {
+        message.error("Verifique os dados dos ingressos e tente novamente!");
+      }
+    }
+  };
+
+  const validateFields = () => {
+    const userId: any = sessionStorage.getItem("@AuthFirebase:user");
+    console.log(JSON.parse(userId).uid);
+    const validateFields = [];
+    if (!title) {
+      validateFields.push("Informe um título antes de prosseguir!");
+    }
+    if (!place) {
+      validateFields.push("Informe um local antes de prosseguir!");
+    }
+    if (!time) {
+      validateFields.push("Informe o horário antes de prosseguir!");
+    }
+    if (!description) {
+      validateFields.push("Informe uma decrição antes de prosseguir!");
+    }
+    if (!ticketColor) {
+      validateFields.push(
+        "Informe uma cor para seu ingresso antes de prosseguir!"
+      );
+    }
+    if (!pictureUrl) {
+      validateFields.push("Informe uma imagem principal antes de prosseguir!");
+    }
+    if (!calendar) {
+      validateFields.push("Informe a data inicial antes de prosseguir!");
+    }
+    if (!adicionalPictureUrl) {
+      validateFields.push("Informe uma imagem adicional antes de prosseguir!");
+    }
+    if (!calendarFinish) {
+      validateFields.push("Informe a data final antes de prosseguir!");
+    }
+    if (!userId) {
+      validateFields.push("Você deve estar autenticado!");
+    }
+    return validateFields;
+  };
+
   return (
     <>
-      {loading && (
+      {finish && (
         <Modal title={"Sucesso!"} handleClose={handleClose}>
           <Styled.H1modal>Concluída com sucesso!</Styled.H1modal>
+        </Modal>
+      )}
+      {uploading && (
+        <Modal title={"Atenção!"} handleClose={handleCloseLoading}>
+          <Styled.H1modal>Cadastrando evento, aguarde...</Styled.H1modal>
         </Modal>
       )}
 
@@ -186,7 +329,9 @@ const CreateEvent: React.FC = () => {
                   />
                 </Styled.FormContainer>
                 <Styled.FormContainer>
-                  <Styled.ItemSpan>Selecione a data do evento.</Styled.ItemSpan>
+                  <Styled.ItemSpan>
+                    Selecione a data de inicio do evento.
+                  </Styled.ItemSpan>
                   <Calendar
                     onChange={(date: Date) => {
                       handleCalendar(date);
@@ -198,15 +343,29 @@ const CreateEvent: React.FC = () => {
                 </Styled.FormContainer>
                 <Styled.FormContainer>
                   <Styled.ItemSpan>
+                    Selecione a data final do evento.
+                  </Styled.ItemSpan>
+                  <Calendar
+                    onChange={(date: Date) => {
+                      handleCalendarFinish(date);
+                    }}
+                    value={calendarFinish}
+                    minDate={new Date()}
+                    locale="PT-br"
+                  />
+                </Styled.FormContainer>
+                <Styled.FormContainer>
+                  <Styled.ItemSpan>
                     Selecione o horário do evento.
                   </Styled.ItemSpan>
 
                   <TimePicker
                     onChange={(val: any) => {
+                      console.log(val);
                       setTime(val);
                     }}
                     value={time as any}
-                    defaultValue={dayjs("12:08", format)}
+                    defaultValue={dayjs("00:00", format)}
                     format={format}
                   />
                 </Styled.FormContainer>
@@ -302,6 +461,29 @@ const CreateEvent: React.FC = () => {
                           }}
                         />
                       </Styled.FormContainer>
+                      <Styled.FormContainer>
+                        <Styled.ItemSpan>
+                          Esse ingresso da acesso a todos os dias do evento?
+                        </Styled.ItemSpan>
+                        <Styled.InputCheckbox
+                          checked={field.isComplete}
+                          onChange={(event) => {
+                            handleFieldChange(index, event, "isComplete");
+                          }}
+                          type="checkbox"
+                        />
+
+                        {/* <Styled.InputCheckbox
+                          style={{
+                            placeSelf: "center",
+                          }}
+                          className={Styled.CheckStyle}
+                          value={field.isComplete}
+                          onChange={(event) => {
+                            handleFieldChange(index, event, "isComplete");
+                          }}
+                        /> */}
+                      </Styled.FormContainer>
                     </Styled.TicketCard>
                   ))}
                   <Styled.Aux
@@ -324,7 +506,9 @@ const CreateEvent: React.FC = () => {
                 <ButtonPrimary
                   bgColor={theme.colors.green.normal}
                   label={"Finalizar cadastro"}
-                  action={cadastrar}
+                  action={() => {
+                    addImg(pictureUrl ? pictureUrl : null);
+                  }}
                 />
               </Styled.Aux>
             </Styled.Container>

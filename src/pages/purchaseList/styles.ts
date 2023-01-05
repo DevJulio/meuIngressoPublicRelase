@@ -35,7 +35,7 @@ export const Info = styled.span`
   color: ${({ theme }) => theme.colors.blue.palete};
   font-family: ${({ theme }) => theme.fonts.primary};
   font-size: ${({ theme }) => theme.fontSize.md2};
-  margin-left: 10vw;
+  margin-left: 5vw;
   @media ${({ theme }) => theme.devices.tablet} {
     text-align: center;
   }

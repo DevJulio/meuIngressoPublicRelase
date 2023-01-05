@@ -172,3 +172,16 @@ margin-bottom: 5vh;
 padding: 12px;
 padding-bottom: 5vh;
 `;
+export const InputCheckbox = styled.input.attrs(() => ({
+  type: "checkbox",
+}))`
+  color: black;
+  font-size: 25px;
+  border: 2px solid ${({ theme }) => theme.colors.orange.palete};
+  border-radius: 5px;
+  width: 32px;
+  height: 32px;
+  margin-top: 5vh;
+  margin-top: 1vh;
+    place-self: center;
+`;

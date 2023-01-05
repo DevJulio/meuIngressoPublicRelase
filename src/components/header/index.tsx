@@ -54,13 +54,13 @@ const Header: React.FC = () => {
               <Styled.MenuItem id="about" href="/sobre">
                 Recuperar Ingresso
               </Styled.MenuItem>
-              {/* <Styled.MenuItem
+              <Styled.MenuItem
                 id="contact"
                 style={{ color: theme.colors.red.normal }}
-                href="/contact"
+                href="/adm/login"
               >
                 Acessar Meu Ingresso
-              </Styled.MenuItem> */}
+              </Styled.MenuItem>
             </Menu>
           </Styled.MenuContainer>
           <Styled.MenuDesktopContainer>
@@ -68,13 +68,14 @@ const Header: React.FC = () => {
             <Styled.MenuDesktopAnchor href="/sobre">
               Recuperar Ingresso
             </Styled.MenuDesktopAnchor>
-            {/* <Styled.MenuDesktopAnchor
+            <Styled.MenuDesktopAnchor
+              href="/adm/login"
               style={{
                 color: theme.colors.red.normal,
               }}
             >
               Acessar Meu Ingresso
-            </Styled.MenuDesktopAnchor> */}
+            </Styled.MenuDesktopAnchor>
           </Styled.MenuDesktopContainer>
         </Styled.MainContainer>
       </Styled.Container>

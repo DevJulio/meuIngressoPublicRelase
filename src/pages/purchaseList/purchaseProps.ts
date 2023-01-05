@@ -11,6 +11,7 @@ const purchaseProps: TUsers[] = [
         buyDetails:
         {
             price: 500,
+            isComplete: true,
             description: "",
             title: "Camarote"
         },
@@ -25,6 +26,7 @@ const purchaseProps: TUsers[] = [
         buyDetails:
         {
             price: 350,
+            isComplete: true,
             description: "",
             title: "Pista"
         },
@@ -39,6 +41,7 @@ const purchaseProps: TUsers[] = [
         buyDetails:
         {
             price: 500,
+            isComplete: true,
             description: "",
             title: "Camarote"
         },
