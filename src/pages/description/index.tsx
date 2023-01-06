@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "../../components/header";
 import { theme } from "../../theme/theme";
 import * as Styled from "./styles";
@@ -13,15 +13,24 @@ import Modal from "../../components/modal";
 import { useNavigate } from "react-router-dom";
 import { TCardProps } from "../../components/ticket/card";
 import api from "../../services/api";
-import { message } from "antd";
+import { Button, message } from "antd";
+import { AuthContext } from "../../contexts/auth";
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 
 const Detail: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
-  const [ticketType, setTicketType] = useState<string>("");
+  const [qtdModal, setQtdModal] = useState<boolean>(false);
+  const [ticketIndex, setTicketIndex] = useState<any>();
   const [event, setEvent] = useState<TCardProps>();
+  const [count, setCount] = useState(1);
+
+  const localAuth: any = useContext(AuthContext);
 
   const handleClose = () => {
     setModal(false);
+  };
+  const handleCloseQtd = () => {
+    setQtdModal(false);
   };
 
   const navigate = useNavigate();
@@ -65,19 +74,42 @@ const Detail: React.FC = () => {
       .padStart(2, "0");
 
   const weekDay = formatarData(
-    `${eventsProps[0].day}/${eventsProps[0].month}/${eventsProps[0].year}`
+    event
+      ? event.calendar
+      : `${eventsProps[0].day}/${eventsProps[0].month}/${eventsProps[0].year}`
   );
+
+  const increase = () => {
+    setCount(count + 1);
+  };
+
+  const decline = () => {
+    if (count >= 1) {
+      if (count === 1) {
+        return;
+      }
+      let newCount = count - 1;
+      if (newCount < 0) {
+        newCount = 0;
+      }
+      setCount(newCount);
+    }
+  };
 
   return (
     <>
-      {modal && (
+      {modal && event && (
         <>
           <Modal title={"Atenção!"} handleClose={handleClose}>
             <Styled.TxtContainer>
-              <Styled.SpanTitleAux>
-                Você escolheu o ingresso: {ticketType}, deseja continuar para o
-                pagamento?
-              </Styled.SpanTitleAux>
+              <Styled.ModalSpan>
+                Você escolheu o ingresso: {event.prices[ticketIndex].title}
+                {"  "}
+                deseja continuar para o pagamento?
+              </Styled.ModalSpan>
+              <Styled.ModalSpan>
+                {event.prices[ticketIndex].description}
+              </Styled.ModalSpan>
             </Styled.TxtContainer>
             <Styled.BtnsContainer>
               <ButtonPrimary
@@ -85,6 +117,11 @@ const Detail: React.FC = () => {
                 label={"Continuar"}
                 action={() => {
                   handleClose();
+                  localAuth.addCart({
+                    ticket: ticketIndex,
+                    qtd: count,
+                    finalPrice: count * event.prices[ticketIndex].price,
+                  });
                   navigate("/compra");
                 }}
               />
@@ -98,7 +135,50 @@ const Detail: React.FC = () => {
           </Modal>
         </>
       )}
-
+      {qtdModal && event && (
+        <>
+          <Modal title={"Atenção!"} handleClose={handleCloseQtd}>
+            <Styled.ModalSpan>
+              Deseja adicionar mais ingressos do tipo{" "}
+              {event ? event.prices[ticketIndex].title : ""} ao carrinho?
+            </Styled.ModalSpan>
+            <Styled.RowContainer>
+              <Button size="large" onClick={decline} icon={<MinusOutlined />} />
+              <Styled.Counter>{count}</Styled.Counter>
+              <Button size="large" onClick={increase} icon={<PlusOutlined />} />
+            </Styled.RowContainer>
+            <Styled.ColContainer>
+              <Styled.ModalSpan
+                style={{
+                  placeContent: "center",
+                  paddingLeft: "0",
+                }}
+              >
+                Valor aual:
+              </Styled.ModalSpan>
+              <Styled.Counter>
+                R$: {count * event.prices[ticketIndex].price}
+              </Styled.Counter>
+            </Styled.ColContainer>
+            <Styled.BtnsContainer>
+              <ButtonPrimary
+                bgColor={theme.colors.green.normal}
+                label={"Continuar"}
+                action={() => {
+                  handleCloseQtd();
+                  setModal(true);
+                }}
+              />
+              <ButtonPrimary
+                label={"Cancelar"}
+                action={() => {
+                  handleClose();
+                }}
+              />
+            </Styled.BtnsContainer>
+          </Modal>
+        </>
+      )}
       <Header />
       <BorderPage
         insideColor={theme.colors.orange.palete}
@@ -187,8 +267,9 @@ const Detail: React.FC = () => {
                     <Styled.Tickets
                       id={id.toString()}
                       onClick={() => {
-                        setTicketType(item.title);
-                        setModal(true);
+                        setCount(1);
+                        setTicketIndex(id);
+                        setQtdModal(true);
                       }}
                     >
                       <span> {item.title}</span>
@@ -196,12 +277,6 @@ const Detail: React.FC = () => {
                     </Styled.Tickets>
                   ))}
                 </Styled.TicketsContainer>
-                {/* <ButtonPrimary
-                action={() => {}}
-                label="Comprar ingresso!"
-                bgColor="#fff"
-                color={theme.colors.orange.palete}
-              /> */}
               </Styled.Container>
             )}
           </>

@@ -8,6 +8,7 @@ export const SingInProvider = ({ children }) => {
   const auth = getAuth(app);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [user, setUser] = useState(null);
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
     const loadStorageData = () => {
@@ -37,8 +38,15 @@ export const SingInProvider = ({ children }) => {
       });
     return retorno;
   };
+
+  const addCart = (itens) => {
+    setCart(itens);
+  };
+
   return (
-    <AuthContext.Provider value={{ signIn, signed: !!user, user }}>
+    <AuthContext.Provider
+      value={{ signIn, signed: !!user, user, addCart, cart }}
+    >
       {children}
     </AuthContext.Provider>
   );

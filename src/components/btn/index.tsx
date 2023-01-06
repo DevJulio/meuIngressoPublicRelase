@@ -4,6 +4,7 @@ import * as Styled from "./styles";
 
 interface Props {
   action: Function;
+  actionSec?: Function;
   label: string;
   color?: string;
   bgColor?: string;
@@ -15,6 +16,7 @@ const ButtonPrimary: React.FC<Props> = ({
   color,
   bgColor,
   fontSize,
+  actionSec,
 }) => {
   return (
     <>
@@ -27,6 +29,9 @@ const ButtonPrimary: React.FC<Props> = ({
           }}
           onClick={() => {
             action();
+            if (actionSec) {
+              actionSec();
+            }
           }}
         >
           {label}

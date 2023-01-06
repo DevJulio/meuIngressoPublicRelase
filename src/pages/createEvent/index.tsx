@@ -92,6 +92,7 @@ const CreateEvent: React.FC = () => {
       ticketColor,
       pictureUrl: localPicUrl,
       status: "active",
+      calendar,
       calendarFinish,
       adicionalPictureUrl: LocaladicionalPictureUrl,
       userId: JSON.parse(userId).uid,
@@ -472,17 +473,6 @@ const CreateEvent: React.FC = () => {
                           }}
                           type="checkbox"
                         />
-
-                        {/* <Styled.InputCheckbox
-                          style={{
-                            placeSelf: "center",
-                          }}
-                          className={Styled.CheckStyle}
-                          value={field.isComplete}
-                          onChange={(event) => {
-                            handleFieldChange(index, event, "isComplete");
-                          }}
-                        /> */}
                       </Styled.FormContainer>
                     </Styled.TicketCard>
                   ))}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "../../components/header";
 import { theme } from "../../theme/theme";
 import * as Styled from "./styles";
@@ -6,29 +6,71 @@ import Footer from "../../components/footer";
 import BorderPage from "../../components/borderPage";
 import ButtonPrimary from "../../components/btn";
 import Modal from "../../components/modal";
-import eventsProps from "../home/eventProps";
 import InputMasked from "../../components/maskedIpunt";
 import Input from "../../components/input";
 import Select from "../../components/select";
 import Cards from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../contexts/auth";
 
 export type TFocus = "name" | "number" | "expiry" | "cvc";
+type TTicket = {
+  userName: string;
+  userNumber: string;
+  cpf: string;
+};
 
 const Buy: React.FC = () => {
+  const localAuth: any = useContext(AuthContext);
+  const defaultTicket: TTicket = {
+    userName: "",
+    userNumber: "",
+    cpf: "",
+  };
   const [number, setNumber] = useState<string | number>("");
   const [name, setName] = useState<string>("");
-  const [userName, setUserName] = useState<string>("");
-  const [userNumber, setUserNumber] = useState<string>("");
-  const [cpf, setCpf] = useState<string>("");
-  const [Tipo, setTipo] = useState("Crédito");
+  const [tipo, setTipo] = useState("Crédito");
   const [expiry, setExpiry] = useState<string | number>("");
   const [cvc, setCvc] = useState<string | number>("");
   const [focus, setfocus] = useState<TFocus>("name");
   const [loading, setLoading] = useState<boolean>(false);
   const [loading2, setLoading2] = useState<boolean>(false);
   const [loading3, setLoading3] = useState<boolean>(false);
+  const [ticket, setTicket] = useState<TTicket[]>([defaultTicket]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!localAuth.cart.qtd) {
+      navigate("/detalhes");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleFieldChange = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement> | any,
+    key: string
+  ) => {
+    const values = [...ticket];
+    switch (key) {
+      case "userName":
+        values[index].userName = event.target.value;
+        setTicket(values);
+        break;
+      case "cpf":
+        values[index].cpf = event.target.value;
+        setTicket(values);
+        break;
+      case "userNumber":
+        values[index].userNumber = event.target.checked;
+        setTicket(values);
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleClose1 = () => {
     setLoading(false);
@@ -39,44 +81,61 @@ const Buy: React.FC = () => {
   const handleClose3 = () => {
     setLoading3(false);
   };
-  const navigate = useNavigate();
 
-  const checkCcAllData = () => {
-    let nameNew = false;
-    let cvcNew = false;
-    let expiryNew = false;
-    let numberNew = false;
+  // const checkCcAllData = () => {
+  //   let nameNew = false;
+  //   let cvcNew = false;
+  //   let expiryNew = false;
+  //   let numberNew = false;
 
-    if (name.length > 5) {
-      nameNew = true;
-    }
-    if (cvc.toString().length >= 3 && cvc.toString().indexOf("_") === -1) {
-      cvcNew = true;
-    }
-    if (
-      expiry.toString().length === 7 &&
-      expiry.toString().indexOf("_") === -1
-    ) {
-      expiryNew = true;
-    }
-    if (
-      number.toString().length === 19 &&
-      number.toString().indexOf("_") === -1
-    ) {
-      numberNew = true;
-    }
+  //   if (name.length > 5) {
+  //     nameNew = true;
+  //   }
+  //   if (cvc.toString().length >= 3 && cvc.toString().indexOf("_") === -1) {
+  //     cvcNew = true;
+  //   }
+  //   if (
+  //     expiry.toString().length === 7 &&
+  //     expiry.toString().indexOf("_") === -1
+  //   ) {
+  //     expiryNew = true;
+  //   }
+  //   if (
+  //     number.toString().length === 19 &&
+  //     number.toString().indexOf("_") === -1
+  //   ) {
+  //     numberNew = true;
+  //   }
 
-    if (nameNew && cvcNew && expiryNew && numberNew) {
-      return true;
-    }
+  //   if (nameNew && cvcNew && expiryNew && numberNew) {
+  //     return true;
+  //   }
 
-    return false;
-  };
+  //   return false;
+  // };
   const buy = async () => {
     // if (checkCcAllData()) {
     //   setLoading(true);
     // }
-    navigate("/ticket");
+    console.log(ticket);
+    // navigate("/ticket");
+  };
+
+  const handleAddField = () => {
+    if (ticket.length < localAuth.cart.qtd) {
+      setTicket([...ticket, defaultTicket]);
+    } else {
+      const myDiv = document.getElementById("compradoLbl");
+      if (myDiv) {
+        myDiv.style.display = "none";
+      }
+    }
+  };
+  const handleBlockDiv = (index: string) => {
+    const myDiv = document.getElementById(index);
+    if (myDiv) {
+      myDiv.style.display = "none";
+    }
   };
 
   return (
@@ -106,40 +165,78 @@ const Buy: React.FC = () => {
         children={
           <>
             <Styled.Container>
-              <Styled.MainContainer>
+              <Styled.MainContainer id="compradoLbl">
                 <Styled.Title>Dados do comprador</Styled.Title>
               </Styled.MainContainer>
-              <Styled.Aux>
-                <Styled.FormContainer
-                  onClick={() => {
-                    setfocus("name");
-                  }}
-                >
-                  <Input Label={"Nome"} setValue={setUserName}></Input>
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <InputMasked
-                    setValue={setCpf}
-                    Label={"CPF do comprador"}
-                    mask={"999.999.999-99"}
-                  ></InputMasked>
-                </Styled.FormContainer>
-                <Styled.FormContainer
-                  onClick={() => {
-                    setfocus("name");
-                  }}
-                >
-                  <InputMasked
-                    setValue={setUserNumber}
-                    Label={"Número de contato"}
-                    mask={"(99) 9 9999 9999"}
-                  ></InputMasked>
-                </Styled.FormContainer>
-              </Styled.Aux>
-
+              {ticket.map((value, index) => (
+                <>
+                  <Styled.Aux id={index.toString()}>
+                    <Styled.ItemSpan>
+                      {index === 0 ? (
+                        <>Informe os dados do titular do compra: </>
+                      ) : (
+                        <>Informe os dados para o ingresso {index + 1}</>
+                      )}
+                    </Styled.ItemSpan>
+                    <Styled.FormContainer
+                      onClick={() => {
+                        setfocus("name");
+                      }}
+                    >
+                      <Styled.ItemSpan>Nome</Styled.ItemSpan>
+                      <Styled.Input
+                        type="text"
+                        value={value.userName}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => handleFieldChange(index, event, "userName")}
+                      />
+                    </Styled.FormContainer>
+                    <Styled.FormContainer>
+                      <Styled.ItemSpan>CPF: </Styled.ItemSpan>
+                      <Styled.InputMaskHtml
+                        mask={"999.999.999-99"}
+                        value={value.cpf}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => handleFieldChange(index, event, "cpf")}
+                      />
+                    </Styled.FormContainer>
+                    <Styled.FormContainer
+                      onClick={() => {
+                        setfocus("name");
+                      }}
+                    >
+                      <Styled.ItemSpan>Número de contato: </Styled.ItemSpan>
+                      <Styled.InputMaskHtml
+                        mask={"(99) 9 9999 9999"}
+                        value={value.userNumber}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => handleFieldChange(index, event, "userNumber")}
+                      />
+                    </Styled.FormContainer>
+                    <Styled.Aux
+                      style={{
+                        marginTop: "3vh",
+                        marginBottom: "3vh",
+                      }}
+                    >
+                      <ButtonPrimary
+                        label={"Informar dados do ingresso"}
+                        action={handleAddField}
+                        actionSec={() => {
+                          handleBlockDiv(index.toString());
+                        }}
+                        bgColor={theme.colors.white.normal}
+                        color={theme.colors.orange.palete}
+                      />
+                    </Styled.Aux>
+                  </Styled.Aux>
+                </>
+              ))}
               <Styled.MainContainer>
                 <Styled.Title>Dados de cartão de crédito</Styled.Title>
-                {/* <Styled.Icons src={cc} /> */}
               </Styled.MainContainer>
 
               <Styled.Aux>
@@ -204,9 +301,7 @@ const Buy: React.FC = () => {
                 <Styled.FormContainer>
                   <Styled.PriceContainer>
                     <Styled.Price>Valor: R$ </Styled.Price>
-                    <Styled.Price>
-                      {eventsProps[0].prices[0].price}
-                    </Styled.Price>
+                    <Styled.Price>{localAuth.cart.finalPrice}</Styled.Price>
                   </Styled.PriceContainer>
                 </Styled.FormContainer>
               </Styled.Aux>

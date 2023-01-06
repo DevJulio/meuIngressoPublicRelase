@@ -182,3 +182,32 @@ export const TxtContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+export const RowContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+      align-items: center;
+    place-content: center;
+    padding: 2vh;
+`;
+
+export const Counter = styled.span`
+  color: ${({ theme }) => theme.colors.orange.palete};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+      padding-inline: 5vw;
+  `;
+export const ModalSpan = styled.span`
+  padding-left: 4.5vw;
+  color: ${({ theme }) => theme.colors.blue.palete};
+  font-family: ${({ theme }) => theme.fonts.secundary};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  width: 95%;
+  padding-top: 3vh;
+  display: flex;
+  `;
+
+export const ColContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;

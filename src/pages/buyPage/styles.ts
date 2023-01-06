@@ -135,3 +135,20 @@ color: ${({ theme }) => theme.colors.orange.palete};
 font-family: ${({ theme }) => theme.fonts.secundary};
 font-size: ${({ theme }) => theme.fontSize.lg};
 `;
+export const Input = styled.input.attrs(() => ({
+  type: "text",
+}))`
+  color: ${({ theme }) => theme.colors.black.normal};
+  font-size: 25px;
+  border: 2px solid ${({ theme }) => theme.colors.black.normal};
+  border-radius: 5px;f
+  margin-top: 10px;
+`;
+export const ItemSpan = styled.span`
+  color: white;
+  font-family: ${({ theme }) => theme.fonts.secundary};
+  margin-top: 4vh;
+  font-size: 18px;
+  padding-bottom: 6px;
+  padding-inline: 2px;
+`;
