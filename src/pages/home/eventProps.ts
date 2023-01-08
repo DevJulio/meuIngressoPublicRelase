@@ -18,11 +18,12 @@ const eventsProps: TCardProps[] = [
     year: "2022",
     id: "1",
     calendar: new Date(),
-    ticketColor: theme.colors.red.amog,
+    ticketColor: theme.colors.orange.palete,
     prices: [
       {
         title: "Camarote",
         isComplete: true,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 500.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -30,6 +31,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Pista",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -56,6 +58,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Camarote",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 500.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -63,6 +66,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Pista",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -90,6 +94,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Camarote",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 400.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -97,6 +102,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Pista",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -123,6 +129,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Camarote",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 500.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -130,6 +137,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Pista",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -156,6 +164,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Camarote",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 500.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -163,6 +172,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Pista",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -189,6 +199,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Camarote",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 500.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",
@@ -196,6 +207,7 @@ const eventsProps: TCardProps[] = [
       {
         title: "Pista",
         isComplete: false,
+        ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
         price: 350.0,
         description:
           "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolorem nemo maxime nesciunt quod quia",

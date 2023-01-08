@@ -17,7 +17,7 @@ export const MainContainer = styled.div`
 margin-bottom: 5vh;
   @media ${({ theme }) => theme.devices.tablet} {
     padding: 10%;
-    width: 77%;
+    width: 75%;
   }
 `;
 export const QRContainer = styled.div`
@@ -73,6 +73,7 @@ export const EventInfoWhite = styled.span`
   color: ${({ theme }) => theme.colors.white.normal};
   font-family: ${({ theme }) => theme.fonts.secundary};
   font-size: 20px;
+  margin-top: 2vh;
   align-self: center;
   @media ${({ theme }) => theme.devices.tablet} {
     text-align-last: center;
@@ -89,7 +90,7 @@ export const EventInfoWarning = styled.span`
 `;
 export const BtnsContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
  `;
 export const MainSpanContainer = styled.div`
@@ -121,4 +122,15 @@ export const NameSpanAux = styled.span`
  @media ${({ theme }) => theme.devices.tablet} {
    font-size: 35px;
  }
+`;export const ColContainer = styled.div`
+display: flex;
+height: 100%;
+width: 100%;
+flex-direction: column;
+place-content: center;
+`;
+
+export const H1modal = styled.h1`
+font-size: 20px;
+padding-inline: 28px;
 `;

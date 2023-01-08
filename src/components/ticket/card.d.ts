@@ -3,6 +3,7 @@ export type TPrices = {
   price: number;
   description: string;
   isComplete: boolean
+  ticketDate: string
 }
 
 export type TCardProps = {

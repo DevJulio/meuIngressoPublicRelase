@@ -16,7 +16,7 @@ export const Input = styled.input.attrs(() => ({
 }))`
   color: black;
   font-size: 25px;
-  border: 2px solid ${({ theme }) => theme.colors.red.amog};
+  border: 2px solid ${({ theme }) => theme.colors.orange.palete};
   border-radius: 5px;
   margin-top: 10px;
 `;
@@ -25,14 +25,14 @@ export const InputPw = styled.input.attrs(() => ({
 }))`
   color: black;
   font-size: 16px;
-  border: 2px solid ${({ theme }) => theme.colors.red.amog};
+  border: 2px solid ${({ theme }) => theme.colors.orange.palete};
   border-radius: 5px;
   margin-top: 10px;
 `;
 export const InputMaskHtml = styled(InputMask)`
   color: black;
   font-size: 25px;
-  border: 2px solid ${({ theme }) => theme.colors.red.amog};
+  border: 2px solid ${({ theme }) => theme.colors.orange.palete};
   border-radius: 5px;
   margin-top: 10px;
 `;

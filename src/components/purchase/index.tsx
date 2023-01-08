@@ -1,6 +1,6 @@
 import React from "react";
 import * as Styled from "./styles";
-import { TUsers } from "../../pages/buyPage/user";
+import { TUsers } from "../../pages/buyPage/buy";
 import { theme } from "../../theme/theme";
 
 interface IUsers {

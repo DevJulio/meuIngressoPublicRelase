@@ -1,4 +1,4 @@
-import { TUsers } from "../buyPage/user";
+import { TUsers } from "../buyPage/buy";
 
 const purchaseProps: TUsers[] = [
     {
@@ -11,6 +11,7 @@ const purchaseProps: TUsers[] = [
         buyDetails:
         {
             price: 500,
+            ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
             isComplete: true,
             description: "",
             title: "Camarote"
@@ -26,6 +27,7 @@ const purchaseProps: TUsers[] = [
         buyDetails:
         {
             price: 350,
+            ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
             isComplete: true,
             description: "",
             title: "Pista"
@@ -41,6 +43,7 @@ const purchaseProps: TUsers[] = [
         buyDetails:
         {
             price: 500,
+            ticketDate: "Sat Jan 07 2023 22:37:20 GMT-0300 (Horário Padrão de Brasília)",
             isComplete: true,
             description: "",
             title: "Camarote"

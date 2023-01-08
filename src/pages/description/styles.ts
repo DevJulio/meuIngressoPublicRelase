@@ -197,6 +197,7 @@ export const Counter = styled.span`
       padding-inline: 5vw;
   `;
 export const ModalSpan = styled.span`
+
   padding-left: 4.5vw;
   color: ${({ theme }) => theme.colors.blue.palete};
   font-family: ${({ theme }) => theme.fonts.secundary};

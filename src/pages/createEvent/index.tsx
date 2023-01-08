@@ -45,6 +45,7 @@ const CreateEvent: React.FC = () => {
       price: 0,
       title: "",
       isComplete: false,
+      ticketDate: "",
     },
   ]);
 
@@ -55,7 +56,7 @@ const CreateEvent: React.FC = () => {
 
   const handleClose = () => {
     setFinish(false);
-    // navigate("/adm/lista-de-eventos");
+    navigate("/adm/lista-de-eventos");
   };
 
   const handleCloseLoading = () => {
@@ -127,7 +128,13 @@ const CreateEvent: React.FC = () => {
   const handleAddField = () => {
     setPrices([
       ...prices,
-      { description: "", price: 0, title: "", isComplete: false },
+      {
+        description: "",
+        price: 0,
+        title: "",
+        isComplete: false,
+        ticketDate: "",
+      },
     ]);
   };
   const handleFieldChange = (
@@ -152,6 +159,12 @@ const CreateEvent: React.FC = () => {
           values[index].isComplete = event.target.checked;
           setPrices(values);
           break;
+        case "ticketDate":
+          console.log(event);
+          values[index].ticketDate = event;
+          setPrices(values);
+          break;
+
         default:
           break;
       }
@@ -462,6 +475,24 @@ const CreateEvent: React.FC = () => {
                           }}
                         />
                       </Styled.FormContainer>
+                      <Styled.FormContainer>
+                        <Styled.ItemSpan>
+                          Selecione o dia da validade do ingresso.
+                        </Styled.ItemSpan>
+                        <Calendar
+                          onChange={(date: Date) => {
+                            handleFieldChange(index, date, "ticketDate", false);
+                          }}
+                          value={
+                            field.ticketDate
+                              ? new Date(field.ticketDate)
+                              : new Date()
+                          }
+                          minDate={new Date()}
+                          locale="PT-br"
+                        />
+                      </Styled.FormContainer>
+
                       <Styled.FormContainer>
                         <Styled.ItemSpan>
                           Esse ingresso da acesso a todos os dias do evento?

@@ -20,11 +20,12 @@ import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 const Detail: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
   const [qtdModal, setQtdModal] = useState<boolean>(false);
-  const [ticketIndex, setTicketIndex] = useState<any>();
+  const [ticketIndex, setTicketIndex] = useState<any>(0);
   const [event, setEvent] = useState<TCardProps>();
   const [count, setCount] = useState(1);
 
   const localAuth: any = useContext(AuthContext);
+  const eventId = localStorage.getItem("eventId");
 
   const handleClose = () => {
     setModal(false);
@@ -37,11 +38,8 @@ const Detail: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const id = localStorage.getItem("eventId");
       try {
-        const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
-        api.defaults.headers["Authorization"] = `${tokenObj}`;
-        const response = await api.get(`/getEvent/${id}`);
+        const response = await api.get(`/getEvent/${eventId}`);
         if (response.status === 200) {
           if (response.status === 200) {
             const event = response.data;
@@ -96,6 +94,21 @@ const Detail: React.FC = () => {
     }
   };
 
+  const expireDay = () => {
+    if (event) {
+      if (event.prices[ticketIndex].isComplete) {
+        return "Todos os dias";
+      } else {
+        return new Date(
+          event.prices[ticketIndex].ticketDate
+        ).toLocaleDateString();
+      }
+    } else {
+      return "";
+    }
+  };
+  const expireDayVar = expireDay();
+
   return (
     <>
       {modal && event && (
@@ -103,12 +116,21 @@ const Detail: React.FC = () => {
           <Modal title={"Atenção!"} handleClose={handleClose}>
             <Styled.TxtContainer>
               <Styled.ModalSpan>
-                Você escolheu o ingresso: {event.prices[ticketIndex].title}
-                {"  "}
-                deseja continuar para o pagamento?
+                Você escolheu o ingresso: {event.prices[ticketIndex].title}.
               </Styled.ModalSpan>
+              <Styled.ModalSpan
+                style={{
+                  paddingTop: "1vh",
+                }}
+              >
+                Válido para: {<>{expireDayVar}</>}.
+              </Styled.ModalSpan>
+
               <Styled.ModalSpan>
                 {event.prices[ticketIndex].description}
+              </Styled.ModalSpan>
+              <Styled.ModalSpan>
+                Deseja continuar para o pagamento?
               </Styled.ModalSpan>
             </Styled.TxtContainer>
             <Styled.BtnsContainer>
@@ -118,9 +140,15 @@ const Detail: React.FC = () => {
                 action={() => {
                   handleClose();
                   localAuth.addCart({
-                    ticket: ticketIndex,
+                    ticket: event.prices[ticketIndex].title,
                     qtd: count,
                     finalPrice: count * event.prices[ticketIndex].price,
+                    ticketDate: event.prices[ticketIndex].ticketDate,
+                    isComplete: event.prices[ticketIndex].isComplete,
+                    eventId: eventId,
+                    ticketColor: event.ticketColor,
+                    title: event.title,
+                    ticketName: event.prices[ticketIndex].title,
                   });
                   navigate("/compra");
                 }}

@@ -13,13 +13,11 @@ import Cards from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/auth";
+import { message } from "antd";
+import api from "../../services/api";
+import { TTicket } from "./buy";
 
 export type TFocus = "name" | "number" | "expiry" | "cvc";
-type TTicket = {
-  userName: string;
-  userNumber: string;
-  cpf: string;
-};
 
 const Buy: React.FC = () => {
   const localAuth: any = useContext(AuthContext);
@@ -27,7 +25,15 @@ const Buy: React.FC = () => {
     userName: "",
     userNumber: "",
     cpf: "",
+    isUsed: false,
+    ticketDate: localAuth.cart.ticketDate,
+    isComplete: localAuth.cart.isComplete,
+    eventId: localAuth.cart.eventId,
+    ticketColor: localAuth.cart.ticketColor,
+    title: localAuth.cart.title,
+    ticketName: localAuth.cart.ticketName,
   };
+
   const [number, setNumber] = useState<string | number>("");
   const [name, setName] = useState<string>("");
   const [tipo, setTipo] = useState("Crédito");
@@ -38,7 +44,9 @@ const Buy: React.FC = () => {
   const [loading2, setLoading2] = useState<boolean>(false);
   const [loading3, setLoading3] = useState<boolean>(false);
   const [ticket, setTicket] = useState<TTicket[]>([defaultTicket]);
-
+  const [uniqueCode] = useState(
+    Math.random().toString(36).substr(2, 9) + Date.now().toString(36)
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,7 +72,7 @@ const Buy: React.FC = () => {
         setTicket(values);
         break;
       case "userNumber":
-        values[index].userNumber = event.target.checked;
+        values[index].userNumber = event.target.value;
         setTicket(values);
         break;
       default:
@@ -82,59 +90,148 @@ const Buy: React.FC = () => {
     setLoading3(false);
   };
 
-  // const checkCcAllData = () => {
-  //   let nameNew = false;
-  //   let cvcNew = false;
-  //   let expiryNew = false;
-  //   let numberNew = false;
+  const checkCcAllData = () => {
+    let nameNew = false;
+    let cvcNew = false;
+    let expiryNew = false;
+    let numberNew = false;
 
-  //   if (name.length > 5) {
-  //     nameNew = true;
-  //   }
-  //   if (cvc.toString().length >= 3 && cvc.toString().indexOf("_") === -1) {
-  //     cvcNew = true;
-  //   }
-  //   if (
-  //     expiry.toString().length === 7 &&
-  //     expiry.toString().indexOf("_") === -1
-  //   ) {
-  //     expiryNew = true;
-  //   }
-  //   if (
-  //     number.toString().length === 19 &&
-  //     number.toString().indexOf("_") === -1
-  //   ) {
-  //     numberNew = true;
-  //   }
+    if (name.length > 5) {
+      nameNew = true;
+    }
+    if (cvc.toString().length >= 3 && cvc.toString().indexOf("_") === -1) {
+      cvcNew = true;
+    }
+    if (
+      expiry.toString().length === 7 &&
+      expiry.toString().indexOf("_") === -1
+    ) {
+      const last4Digits = expiry
+        .toString()
+        .substr(expiry.toString().length - 4);
 
-  //   if (nameNew && cvcNew && expiryNew && numberNew) {
-  //     return true;
-  //   }
+      if (Number(last4Digits) < Number(new Date().getFullYear())) {
+        expiryNew = false;
+      } else {
+        expiryNew = true;
+      }
+    }
+    if (
+      number.toString().length === 19 &&
+      number.toString().indexOf("_") === -1
+    ) {
+      numberNew = true;
+    }
 
-  //   return false;
-  // };
+    if (nameNew && cvcNew && expiryNew && numberNew) {
+      setLoading(true);
+      return true;
+    }
+    setLoading3(true);
+    return false;
+  };
+
   const buy = async () => {
-    // if (checkCcAllData()) {
-    //   setLoading(true);
-    // }
-    console.log(ticket);
-    // navigate("/ticket");
+    if (checkCcAllData()) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+
+      //TODO: simulando retorno da api de pagamento.
+      const paymentRes = true;
+
+      if (paymentRes) {
+        const payload = {
+          ticket,
+          tipo,
+          tipoIngresso: localAuth.cart.ticket,
+          valorPago: localAuth.cart.finalPrice,
+          horaCompra: `${new Date().getHours()}:${new Date().getMinutes()}`,
+          createdAt: new Date(),
+        };
+        try {
+          const response = await api.post("/addPurchase", payload);
+          if (response.status === 200) {
+            sessionStorage.setItem("@AuthFirebase:uniqueCode", uniqueCode);
+
+            await Promise.all(
+              ticket.map(async (ingresso) => {
+                const ticketPayload = {
+                  ...ingresso,
+                  buyId: uniqueCode,
+                };
+
+                try {
+                  const response = await api.post("/addTicket", ticketPayload);
+                  if (response.status === 200) {
+                    return true;
+                  }
+                } catch (error: any) {
+                  if (error.response.status === 401) {
+                    message.error("Sessão expirada, faça login novamente!");
+                    setTimeout(() => {
+                      navigate("/adm/login");
+                    }, 4000);
+                  }
+                  message.error("Verifique os dados e tente novamente!");
+                  return false;
+                }
+              })
+            ).then((res) => {
+              if (res.every((value) => value === true)) {
+                navigate("/ticket");
+              }
+            });
+          }
+        } catch (error: any) {
+          if (error.response.status === 401) {
+            message.error("Sessão expirada, faça login novamente!");
+            setTimeout(() => {
+              navigate("/adm/login");
+            }, 4000);
+          }
+          message.error("Verifique os dados e tente novamente!");
+        }
+      } else {
+        message.error("Verifique os dados e tente novamente!");
+        setLoading3(true);
+      }
+    }
+  };
+
+  const checkTicketData = () => {
+    const currentTkt = ticket[ticket.length - 1];
+    if (currentTkt.cpf && currentTkt.userName && currentTkt.userNumber) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const handleAddField = () => {
-    if (ticket.length < localAuth.cart.qtd) {
-      setTicket([...ticket, defaultTicket]);
-    } else {
-      const myDiv = document.getElementById("compradoLbl");
-      if (myDiv) {
-        myDiv.style.display = "none";
+    if (checkTicketData()) {
+      if (ticket.length < localAuth.cart.qtd) {
+        setTicket([...ticket, defaultTicket]);
+      } else {
+        const compradoLbl = document.getElementById("compradoLbl");
+        const cardContainer = document.getElementById("cardContainer");
+        if (compradoLbl) {
+          compradoLbl.style.display = "none";
+        }
+        if (cardContainer) {
+          cardContainer.style.display = "flex";
+        }
       }
     }
   };
   const handleBlockDiv = (index: string) => {
-    const myDiv = document.getElementById(index);
-    if (myDiv) {
-      myDiv.style.display = "none";
+    if (checkTicketData()) {
+      const myDiv = document.getElementById(index);
+      if (myDiv) {
+        myDiv.style.display = "none";
+      }
+    } else {
+      message.error("Verifique os dados e tente novamente!");
     }
   };
 
@@ -166,7 +263,7 @@ const Buy: React.FC = () => {
           <>
             <Styled.Container>
               <Styled.MainContainer id="compradoLbl">
-                <Styled.Title>Dados do comprador</Styled.Title>
+                <Styled.Title>Informações do comprador</Styled.Title>
               </Styled.MainContainer>
               {ticket.map((value, index) => (
                 <>
@@ -175,7 +272,7 @@ const Buy: React.FC = () => {
                       {index === 0 ? (
                         <>Informe os dados do titular do compra: </>
                       ) : (
-                        <>Informe os dados para o ingresso {index + 1}</>
+                        <>Cadastro para o ingresso: {index + 1}</>
                       )}
                     </Styled.ItemSpan>
                     <Styled.FormContainer
@@ -193,27 +290,26 @@ const Buy: React.FC = () => {
                       />
                     </Styled.FormContainer>
                     <Styled.FormContainer>
-                      <Styled.ItemSpan>CPF: </Styled.ItemSpan>
-                      <Styled.InputMaskHtml
-                        mask={"999.999.999-99"}
-                        value={value.cpf}
-                        onChange={(
-                          event: React.ChangeEvent<HTMLInputElement>
-                        ) => handleFieldChange(index, event, "cpf")}
-                      />
-                    </Styled.FormContainer>
-                    <Styled.FormContainer
-                      onClick={() => {
-                        setfocus("name");
-                      }}
-                    >
                       <Styled.ItemSpan>Número de contato: </Styled.ItemSpan>
                       <Styled.InputMaskHtml
                         mask={"(99) 9 9999 9999"}
                         value={value.userNumber}
+                        type="text"
+                        autoComplete="off"
                         onChange={(
                           event: React.ChangeEvent<HTMLInputElement>
                         ) => handleFieldChange(index, event, "userNumber")}
+                      />
+                    </Styled.FormContainer>
+                    <Styled.FormContainer>
+                      <Styled.ItemSpan>CPF: </Styled.ItemSpan>
+                      <Styled.InputMaskHtml
+                        mask={"999.999.999-99"}
+                        value={value.cpf}
+                        type="text"
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => handleFieldChange(index, event, "cpf")}
                       />
                     </Styled.FormContainer>
                     <Styled.Aux
@@ -223,7 +319,7 @@ const Buy: React.FC = () => {
                       }}
                     >
                       <ButtonPrimary
-                        label={"Informar dados do ingresso"}
+                        label={"continuar"}
                         action={handleAddField}
                         actionSec={() => {
                           handleBlockDiv(index.toString());
@@ -235,95 +331,98 @@ const Buy: React.FC = () => {
                   </Styled.Aux>
                 </>
               ))}
-              <Styled.MainContainer>
-                <Styled.Title>Dados de cartão de crédito</Styled.Title>
-              </Styled.MainContainer>
 
-              <Styled.Aux>
-                <Styled.FormContainer
-                  onClick={() => {
-                    setfocus("name");
-                  }}
-                >
-                  <Input
-                    Label={"Nome (assim como no cartão de crédito)"}
-                    setValue={setName}
-                  ></Input>
-                </Styled.FormContainer>
+              <Styled.CardDiv id="cardContainer">
+                <Styled.MainContainer>
+                  <Styled.Title>Dados de cartão de crédito</Styled.Title>
+                </Styled.MainContainer>
 
-                <Styled.FormContainer
-                  onClick={() => {
-                    setfocus("cvc");
-                  }}
-                >
-                  <InputMasked
-                    setValue={setCvc}
-                    Label={"CVV"}
-                    mask={"999"}
-                  ></InputMasked>
-                </Styled.FormContainer>
-              </Styled.Aux>
-              <Styled.Aux>
-                <Styled.FormContainer
-                  onClick={() => {
-                    setfocus("expiry");
-                  }}
-                >
-                  <InputMasked
-                    Label={"Data de validade"}
-                    placeholder="MM/AAAA"
-                    mask={"99/9999"}
-                    setValue={setExpiry}
-                  ></InputMasked>
-                </Styled.FormContainer>
+                <Styled.Aux>
+                  <Styled.FormContainer
+                    onClick={() => {
+                      setfocus("name");
+                    }}
+                  >
+                    <Input
+                      Label={"Nome (assim como no cartão de crédito)"}
+                      setValue={setName}
+                    ></Input>
+                  </Styled.FormContainer>
 
-                <Styled.FormContainer
-                  onClick={() => {
-                    setfocus("number");
-                  }}
-                >
-                  <InputMasked
-                    Label={"Número (assim como no cartão de crédito)"}
-                    mask={"9999 9999 9999 9999"}
-                    setValue={setNumber}
-                  ></InputMasked>
-                </Styled.FormContainer>
-              </Styled.Aux>
+                  <Styled.FormContainer
+                    onClick={() => {
+                      setfocus("cvc");
+                    }}
+                  >
+                    <InputMasked
+                      setValue={setCvc}
+                      Label={"CVV"}
+                      mask={"999"}
+                    ></InputMasked>
+                  </Styled.FormContainer>
+                </Styled.Aux>
+                <Styled.Aux>
+                  <Styled.FormContainer
+                    onClick={() => {
+                      setfocus("expiry");
+                    }}
+                  >
+                    <InputMasked
+                      Label={"Data de validade"}
+                      placeholder="MM/AAAA"
+                      mask={"99/2099"}
+                      setValue={setExpiry}
+                    ></InputMasked>
+                  </Styled.FormContainer>
 
-              <Styled.Aux>
-                <Styled.FormContainer>
-                  <Select
-                    label={"Tipo do cartão"}
-                    setValue={setTipo}
-                    options={["Crédito", "Débito"]}
-                  ></Select>
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <Styled.PriceContainer>
-                    <Styled.Price>Valor: R$ </Styled.Price>
-                    <Styled.Price>{localAuth.cart.finalPrice}</Styled.Price>
-                  </Styled.PriceContainer>
-                </Styled.FormContainer>
-              </Styled.Aux>
-              <Styled.Aux>
-                <div style={{ paddingBottom: "2vh" }}>
-                  <Cards
-                    number={number}
-                    name={name}
-                    expiry={expiry}
-                    cvc={cvc}
-                    preview={true}
-                    focused={focus}
+                  <Styled.FormContainer
+                    onClick={() => {
+                      setfocus("number");
+                    }}
+                  >
+                    <InputMasked
+                      Label={"Número (assim como no cartão de crédito)"}
+                      mask={"9999 9999 9999 9999"}
+                      setValue={setNumber}
+                    ></InputMasked>
+                  </Styled.FormContainer>
+                </Styled.Aux>
+
+                <Styled.Aux>
+                  <Styled.FormContainer>
+                    <Select
+                      label={"Tipo do cartão"}
+                      setValue={setTipo}
+                      options={["Crédito", "Débito"]}
+                    ></Select>
+                  </Styled.FormContainer>
+                  <Styled.FormContainer>
+                    <Styled.PriceContainer>
+                      <Styled.Price>Valor: R$ </Styled.Price>
+                      <Styled.Price>{localAuth.cart.finalPrice}</Styled.Price>
+                    </Styled.PriceContainer>
+                  </Styled.FormContainer>
+                </Styled.Aux>
+                <Styled.Aux>
+                  <div style={{ paddingBottom: "2vh" }}>
+                    <Cards
+                      number={number}
+                      name={name}
+                      expiry={expiry}
+                      cvc={cvc}
+                      preview={true}
+                      focused={focus}
+                    />
+                  </div>
+                </Styled.Aux>
+                <Styled.Aux>
+                  <ButtonPrimary
+                    bgColor={theme.colors.green.normal}
+                    label={"Finalizar compra"}
+                    action={buy}
                   />
-                </div>
-              </Styled.Aux>
-              <Styled.Aux>
-                <ButtonPrimary
-                  bgColor={theme.colors.green.normal}
-                  label={"Finalizar compra"}
-                  action={buy}
-                />
-              </Styled.Aux>
+                </Styled.Aux>
+              </Styled.CardDiv>
             </Styled.Container>
           </>
         }

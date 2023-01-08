@@ -8,6 +8,14 @@ import * as Styled from "./styles";
 import ButtonPrimary from "../btn";
 import { theme } from "../../theme/theme";
 import eventsProps from "../../pages/home/eventProps";
+import { TTicket } from "../../pages/buyPage/buy";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import Modal from "../modal";
 
 export type TPassport = {
   day: string;
@@ -24,12 +32,18 @@ export type TPassport = {
   holder: string;
 };
 
-const IngressoReady: React.FC = () => {
-  const [passaporteData, setPassaporteData] = useState<TPassport>();
+interface Props {
+  tkt: TTicket;
+}
+
+const IngressoReady: React.FC<Props> = ({ tkt }) => {
+  
+  window.scrollTo(0, 0);
+
   const [fontColor, setFontColor] = useState<string>();
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const docId = localStorage.getItem("AMOG_TICKET_ID");
-
+  const tktDate = new Date(tkt.ticketDate).toLocaleDateString();
   useEffect(() => {
     if (eventsProps[0].ticketColor === "#000000") {
       setFontColor(theme.colors.white.normal);
@@ -38,18 +52,8 @@ const IngressoReady: React.FC = () => {
       setFontColor(theme.colors.black.normal);
     }
   }, []);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-
-    const fetchData = async () => {
-      // const res = await api.get<TPassport>(`/getTicketData/${docId}`);
-      // res && setPassaporteData(res.data);
-    };
-    fetchData();
-  }, [docId]);
-
-  const value = `https://www.amog.com.br/compras/burn/?id=${docId}`;
+  // TODO: Alterar link
+  const value = `https://www.amog.com.br/compras/burn/?id=${tkt.id}`;
 
   function downloadURI(uri: string, name: string) {
     const link = document.createElement("a");
@@ -59,32 +63,97 @@ const IngressoReady: React.FC = () => {
     link.click();
   }
 
-  function DownloadAsImage() {
-    const element = document.getElementById("target");
+  const downloadAsImage = () => {
+    const element = document.getElementById(tkt.id ? tkt.id : "");
     if (element) {
       html2canvas(element).then(function (canvas) {
         const myImage = canvas.toDataURL();
         downloadURI(myImage, "ENTRADA_MEU_INGRESSO.png");
       });
     }
-  }
+  };
+
+  const sendWhatsAppLink = (number: string, link: string) => {
+    const parsedNumber = number.replace(/\(\s*|\s*\)/g, "");
+    window.open(
+      `https://api.whatsapp.com/send?phone=${parsedNumber}&text=Obrigado por Usar o Meu Ingresso! Link para acessar o ingresso: ${encodeURIComponent(
+        link
+      )}`
+    );
+  };
+
+  const send2Wpp = async () => {
+    setLoading(true);
+    const element = document.getElementById(tkt.id ? tkt.id : "");
+    if (element) {
+      html2canvas(element).then(function (canvas) {
+        canvas.toBlob(function (blob) {
+          if (blob) {
+            const storage = getStorage();
+            const storageRef = ref(storage, "user" + Math.random() * 100);
+            const uploadTask = uploadBytesResumable(storageRef, blob);
+            uploadTask.on(
+              "state_changed",
+              (snapshot) => {
+                switch (snapshot.state) {
+                  case "paused":
+                    console.log("Upload is paused");
+                    break;
+                  case "running":
+                    console.log("Upload is running");
+                    break;
+                }
+              },
+              (error) => {
+                console.error(error);
+              },
+              () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                  setLoading(false);
+                  sendWhatsAppLink(tkt.userNumber, downloadURL);
+                  console.log(downloadURL);
+                });
+              }
+            );
+          }
+        });
+      });
+    }
+  };
+
+  const handleClose = () => {
+    setLoading(false);
+  };
 
   return (
     <Styled.Container>
+      {loading && (
+        <Modal title={"Aguarde!"} handleClose={handleClose}>
+          <Styled.H1modal>Aguarde o processamento do ingresso!</Styled.H1modal>
+        </Modal>
+      )}
+
       <Styled.BtnsContainer>
         <ButtonPrimary
           bgColor={theme.colors.green.normal}
           label={"Salvar ingresso"}
           action={() => {
-            DownloadAsImage();
+            downloadAsImage();
+          }}
+        />
+        <ButtonPrimary
+          bgColor={theme.colors.green.normal}
+          label={"enviar ingresso via WhatsApp"}
+          action={() => {
+            send2Wpp();
           }}
         />
       </Styled.BtnsContainer>
 
       <Styled.MainContainer
-        id="target"
+        id={tkt.id}
         style={{
-          backgroundColor: eventsProps[0].ticketColor,
+          backgroundColor: tkt.ticketColor,
         }}
       >
         <Styled.IMGContainer>
@@ -95,17 +164,14 @@ const IngressoReady: React.FC = () => {
         </Styled.IMGContainer>
         <Styled.SpanContainer>
           <Styled.Title>
-            {passaporteData?.buyerNamer}, seja bem vindo(a) ao seu próximo
-            evento!
+            {tkt.userName}, seja bem vindo(a) ao seu próximo evento!
           </Styled.Title>
         </Styled.SpanContainer>
         <Styled.QRContainer>
           <QRCode level="L" value={value}></QRCode>
         </Styled.QRContainer>
         <Styled.SpanContainer>
-          <Styled.TicketType>
-            {eventsProps[0].prices[0].title}
-          </Styled.TicketType>
+          <Styled.TicketType>{tkt.ticketName}</Styled.TicketType>
         </Styled.SpanContainer>
         <Styled.SpanContainer
           style={{
@@ -114,11 +180,13 @@ const IngressoReady: React.FC = () => {
             height: "32px",
           }}
         >
-          <Styled.EventInfo>{eventsProps[0].title}</Styled.EventInfo>
+          <Styled.EventInfo>{tkt.title}</Styled.EventInfo>
         </Styled.SpanContainer>
         <Styled.SpanContainer style={{ paddingTop: "16px" }}>
           <Styled.EventInfoWhite style={{ color: fontColor }}>
-            Válido somente no dia {passaporteData?.day}.
+            {tkt.isComplete
+              ? "Válido todos os dias do evento!"
+              : `Válido somente no dia ${tktDate}`}
           </Styled.EventInfoWhite>
         </Styled.SpanContainer>
         <Styled.SpanContainer style={{ paddingTop: "16px" }}>
@@ -126,7 +194,7 @@ const IngressoReady: React.FC = () => {
         </Styled.SpanContainer>
         <Styled.SpanContainer style={{ paddingTop: "16px" }}>
           <Styled.EventInfoWhite style={{ fontSize: "15px", color: fontColor }}>
-            Ingresso válido para uso único. Consulte as condições de uso no
+            Ingresso único e intransferível. Consulte as condições de uso no
             local do evento.
           </Styled.EventInfoWhite>
         </Styled.SpanContainer>

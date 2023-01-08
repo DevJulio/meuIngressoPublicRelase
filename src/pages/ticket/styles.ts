@@ -43,6 +43,7 @@ export const Container = styled.div`
   place-content: center;
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
+  flex-direction: column;
 `;
 export const Atention = styled.span`
   color:  ${({ theme }) => theme.colors.red.normal};

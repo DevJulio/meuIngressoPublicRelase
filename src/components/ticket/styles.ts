@@ -5,8 +5,8 @@ export const SpanAndIcon = styled.div`
   flex-direction: column;
   padding-top: 2vh;
   padding-bottom: 1vh;
-  min-width: 390px;
-  max-width: 390px;
+  min-width: 100vw;
+  max-width: 100vw;
 `;
 export const Container = styled.div`
   display: flex;

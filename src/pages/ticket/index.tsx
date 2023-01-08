@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import * as Styled from "./styles";
 
@@ -7,27 +7,38 @@ import Header from "../../components/header";
 import Footer from "../../components/footer";
 import { theme } from "../../theme/theme";
 import IngressoReady from "../../components/ingressos";
+import { message } from "antd";
+import api from "../../services/api";
+import { TTicket } from "../buyPage/buy";
+import ButtonPrimary from "../../components/btn";
+import { useNavigate } from "react-router-dom";
 
 const TickeReady: React.FC = () => {
+  const [ticket, setTicket] = useState<TTicket[]>([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    const fetchData = async () => {
+      try {
+        const id = sessionStorage.getItem("@AuthFirebase:uniqueCode");
+        const response = await api.get(`/getTicketsToSave/${id}`);
+        if (response.status === 200) {
+          setTicket(response.data);
+        }
+      } catch (error: any) {
+        console.log(error);
+        message.error("Verifique os dados e tente novamente!");
+      }
+    };
+    fetchData();
   }, []);
 
   const createTicket = () => {
-    return <IngressoReady />;
-    // const ticketType = localStorage.getItem("ticketType");
-    // const ticketDay = localStorage.getItem("ticketDay");
-    // const docId = localStorage.getItem("AMOG_TICKET_ID");
-    // if (ticketType && ticketDay && docId) {
-    //   if (ticketType === "Passaporte") {
-    //     return <Passaporte />;
-    //   }
-    //   if (ticketType === "Ingresso") {
-    //     return <Ingresso />;
-    //   }
-    // } else {
-    //   // history.push("/construcao");
-    // }
+    return ticket.map((tkt) => {
+      return <IngressoReady tkt={tkt} />;
+    });
   };
 
   return (
@@ -47,6 +58,10 @@ const TickeReady: React.FC = () => {
               celular
             </Styled.ItemSpan>
             <Styled.ItemSpan>
+              Clique no botão "Enviar ingresso via WhatsApp" para receber o
+              ingresso no número informado na compra.
+            </Styled.ItemSpan>
+            <Styled.ItemSpan>
               É necessário apresentar o ingresso na entrada com QR code nítido e
               legível
             </Styled.ItemSpan>
@@ -55,13 +70,20 @@ const TickeReady: React.FC = () => {
               print ou baixado.
             </Styled.ItemSpan>
             <Styled.ItemSpan>
-              Caso o usuário perca o ingresso, pode ser recuperado via CPF na
-              página principal do site
+              Caso o usuário perca o ingresso ou não consiga baixar, pode ser
+              recuperado via CPF na página principal do site.
             </Styled.ItemSpan>
           </Styled.ColContainer>
         </Styled.ColContainer>
       </Styled.Container>
       <Styled.Container>{createTicket()}</Styled.Container>
+      <ButtonPrimary
+        bgColor={theme.colors.orange.palete}
+        label={"Voltar para página principal"}
+        action={() => {
+          navigate("/");
+        }}
+      />
       <Footer />
     </>
   );

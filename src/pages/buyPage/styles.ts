@@ -90,7 +90,7 @@ export const BtnContainer = styled.div`
 export const InputMaskHtml = styled(InputMask)`
   color: black;
   font-size: 25px;
-  border: 2px solid ${({ theme }) => theme.colors.red.amog};
+  border: 2px solid ${({ theme }) => theme.colors.orange.palete};
   border-radius: 5px;
   margin-top: 20px;
 `;
@@ -147,8 +147,20 @@ export const Input = styled.input.attrs(() => ({
 export const ItemSpan = styled.span`
   color: white;
   font-family: ${({ theme }) => theme.fonts.secundary};
-  margin-top: 4vh;
+  margin-top: 3vh;
   font-size: 18px;
   padding-bottom: 6px;
   padding-inline: 2px;
+`;
+export const CardDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  place-content: center;
+  display: none;
+  @media ${({ theme }) => theme.devices.tablet} {
+    flex-direction: column;
+    width: 90%;
+    padding-left: 19px;
+  }
 `;
