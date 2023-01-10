@@ -47,6 +47,8 @@ export const Aux = styled.div`
   flex-direction: row;
   width: 100%;
   place-content: center;
+  // padding-bottom: 19vh;
+  //   padding-top: 13vh;
   @media ${({ theme }) => theme.devices.tablet} {
     flex-direction: column;
     width: 90%;
@@ -163,4 +165,17 @@ export const CardDiv = styled.div`
     width: 90%;
     padding-left: 19px;
   }
+`;
+export const BtnContainerAux = styled.div`
+display: flex;
+flex-direction: row;
+width: 100%;
+place-content: center;
+padding-bottom: 13vh;
+    padding-top: 9vh;
+@media ${({ theme }) => theme.devices.tablet} {
+  flex-direction: column;
+  width: 90%;
+  padding-left: 19px;
+}
 `;

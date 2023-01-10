@@ -32,21 +32,18 @@ const Buy: React.FC = () => {
     ticketColor: localAuth.cart.ticketColor,
     title: localAuth.cart.title,
     ticketName: localAuth.cart.ticketName,
+    buyId: "",
   };
 
-  const [number, setNumber] = useState<string | number>("");
-  const [name, setName] = useState<string>("");
   const [tipo, setTipo] = useState("Crédito");
-  const [expiry, setExpiry] = useState<string | number>("");
-  const [cvc, setCvc] = useState<string | number>("");
   const [focus, setfocus] = useState<TFocus>("name");
   const [loading, setLoading] = useState<boolean>(false);
   const [loading2, setLoading2] = useState<boolean>(false);
   const [loading3, setLoading3] = useState<boolean>(false);
   const [ticket, setTicket] = useState<TTicket[]>([defaultTicket]);
-  const [uniqueCode] = useState(
-    Math.random().toString(36).substr(2, 9) + Date.now().toString(36)
-  );
+  const uniqueCode =
+    Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -90,112 +87,65 @@ const Buy: React.FC = () => {
     setLoading3(false);
   };
 
-  const checkCcAllData = () => {
-    let nameNew = false;
-    let cvcNew = false;
-    let expiryNew = false;
-    let numberNew = false;
-
-    if (name.length > 5) {
-      nameNew = true;
-    }
-    if (cvc.toString().length >= 3 && cvc.toString().indexOf("_") === -1) {
-      cvcNew = true;
-    }
-    if (
-      expiry.toString().length === 7 &&
-      expiry.toString().indexOf("_") === -1
-    ) {
-      const last4Digits = expiry
-        .toString()
-        .substr(expiry.toString().length - 4);
-
-      if (Number(last4Digits) < Number(new Date().getFullYear())) {
-        expiryNew = false;
-      } else {
-        expiryNew = true;
-      }
-    }
-    if (
-      number.toString().length === 19 &&
-      number.toString().indexOf("_") === -1
-    ) {
-      numberNew = true;
-    }
-
-    if (nameNew && cvcNew && expiryNew && numberNew) {
-      setLoading(true);
-      return true;
-    }
-    setLoading3(true);
-    return false;
-  };
-
   const buy = async () => {
-    if (checkCcAllData()) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
+    //TODO: simulando retorno da api de pagamento.
+    const payload = {
+      ticket,
+      tipo,
+      tipoIngresso: localAuth.cart.ticket,
+      eventId: localAuth.cart.eventId,
+      valorPago: localAuth.cart.finalPrice,
+      horaCompra: `${new Date().getHours()}:${new Date().getMinutes()}`,
+      createdAt: new Date(),
+      isValid: false,
+      buyId: uniqueCode,
+    };
+    try {
+      const response = await api.post("/addPurchase", payload);
+      if (response.status === 200) {
+        sessionStorage.setItem("@AuthFirebase:uniqueCode", uniqueCode);
+        await Promise.all(
+          ticket.map(async (ingresso) => {
+            const ticketPayload = {
+              ...ingresso,
+              isValid: false,
+              buyId: uniqueCode,
+            };
 
-      //TODO: simulando retorno da api de pagamento.
-      const paymentRes = true;
-
-      if (paymentRes) {
-        const payload = {
-          ticket,
-          tipo,
-          tipoIngresso: localAuth.cart.ticket,
-          valorPago: localAuth.cart.finalPrice,
-          horaCompra: `${new Date().getHours()}:${new Date().getMinutes()}`,
-          createdAt: new Date(),
-        };
-        try {
-          const response = await api.post("/addPurchase", payload);
-          if (response.status === 200) {
-            sessionStorage.setItem("@AuthFirebase:uniqueCode", uniqueCode);
-
-            await Promise.all(
-              ticket.map(async (ingresso) => {
-                const ticketPayload = {
-                  ...ingresso,
-                  buyId: uniqueCode,
-                };
-
-                try {
-                  const response = await api.post("/addTicket", ticketPayload);
-                  if (response.status === 200) {
-                    return true;
-                  }
-                } catch (error: any) {
-                  if (error.response.status === 401) {
-                    message.error("Sessão expirada, faça login novamente!");
-                    setTimeout(() => {
-                      navigate("/adm/login");
-                    }, 4000);
-                  }
-                  message.error("Verifique os dados e tente novamente!");
-                  return false;
-                }
-              })
-            ).then((res) => {
-              if (res.every((value) => value === true)) {
-                navigate("/ticket");
+            try {
+              const response = await api.post("/addTicket", ticketPayload);
+              if (response.status === 200) {
+                return true;
               }
-            });
+            } catch (error: any) {
+              message.error("Verifique os dados e tente novamente!");
+              return false;
+            }
+          })
+        ).then(async () => {
+          try {
+            const tktPrice = localAuth.cart.finalPrice;
+            console.log(tktPrice);
+            const response = await api.post("/createPayment", {tktPrice});
+            if (response.data.status) {
+              sessionStorage.setItem("@AuthFirebase:uniqueCodeStatus", "true");
+              window.location = response.data.url;
+            }
+          } catch (error: any) {
+            console.log(error);
+            message.error("Verifique os dados e tente novamente!");
+            return false;
           }
-        } catch (error: any) {
-          if (error.response.status === 401) {
-            message.error("Sessão expirada, faça login novamente!");
-            setTimeout(() => {
-              navigate("/adm/login");
-            }, 4000);
-          }
-          message.error("Verifique os dados e tente novamente!");
-        }
-      } else {
-        message.error("Verifique os dados e tente novamente!");
-        setLoading3(true);
+        });
       }
+    } catch (error: any) {
+      if (error.response.status === 401) {
+        message.error("Sessão expirada, faça login novamente!");
+        setTimeout(() => {
+          navigate("/adm/login");
+        }, 4000);
+      }
+      message.error("Verifique os dados e tente novamente!");
     }
   };
 
@@ -336,8 +286,22 @@ const Buy: React.FC = () => {
                 <Styled.MainContainer>
                   <Styled.Title>Dados de cartão de crédito</Styled.Title>
                 </Styled.MainContainer>
-
-                <Styled.Aux>
+                <Styled.FormContainer>
+                  <Styled.PriceContainer>
+                    <Styled.Price>Valor: R$ </Styled.Price>
+                    <Styled.Price>{localAuth.cart.finalPrice}</Styled.Price>
+                  </Styled.PriceContainer>
+                </Styled.FormContainer>
+                <Styled.BtnContainerAux>
+                  <ButtonPrimary
+                    bgColor={theme.colors.green.normal}
+                    label={"Seguir para pagamento"}
+                    action={() => {
+                      buy();
+                    }}
+                  />
+                </Styled.BtnContainerAux>
+                {/* <Styled.Aux>
                   <Styled.FormContainer
                     onClick={() => {
                       setfocus("name");
@@ -422,6 +386,7 @@ const Buy: React.FC = () => {
                     action={buy}
                   />
                 </Styled.Aux>
+ */}
               </Styled.CardDiv>
             </Styled.Container>
           </>

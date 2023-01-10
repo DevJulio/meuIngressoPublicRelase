@@ -1,39 +1,6 @@
 import styled from "styled-components";
 
 
-export const MainContainer = styled.div`
-display: none;
-@media ${({ theme }) => theme.devices.tablet} {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  }
-`
-
-export const DesktopContainer = styled.div`
-display: flex;
-flex-direction: column;
-width: 100%;
-@media ${({ theme }) => theme.devices.tablet} {
-  display: none;
-  }
-`
-export const Title = styled.span`
-  display: flex;
-  padding-left: 2vw;
-  width: 95%;
-  justify-content: center;
-  color: ${({ theme }) => theme.colors.blue.palete};
-
-  font-family: ${({ theme }) => theme.fonts.primary};
-  font-size: ${({ theme }) => theme.fontSize.lg};
-  @media ${({ theme }) => theme.devices.tablet} {
-    font-size: ${({ theme }) => theme.fontSize.xlg};
-    width: 100%;
-  }
-`;
-
-
 export const Container = styled.div`
 display: flex;
 flex-direction: column;
@@ -70,6 +37,20 @@ export const LogoImg = styled.img`
   padding-left: 17vw;
   @media ${({ theme }) => theme.devices.tablet} {
     width: 45px;
+  }
+`;
+export const Title = styled.span`
+  display: flex;
+  padding-left: 3.9vw;
+  width: 95%;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.blue.palete};
+
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+  @media ${({ theme }) => theme.devices.tablet} {
+    font-size: ${({ theme }) => theme.fontSize.xlg};
+    width: 100%;
   }
 `;
 

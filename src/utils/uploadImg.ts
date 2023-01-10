@@ -28,7 +28,6 @@ export const addImg = async (file: File) => {
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                         downloadURLreturn = downloadURL
-                        console.log(downloadURLreturn);
                         return downloadURLreturn
                     });
                 }

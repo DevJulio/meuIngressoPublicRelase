@@ -22,4 +22,6 @@ export type TTicket = {
   title: string;
   ticketName: string;
   id?: string;
+  buyId?: string
+  isValid?: boolean
 };

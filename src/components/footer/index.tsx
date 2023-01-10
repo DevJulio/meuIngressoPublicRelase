@@ -1,8 +1,8 @@
 import React from "react";
 import * as Styled from "./styles";
-import footerLogo from "../../assets/logo/footerLogo.png";
+import footerLogo from "../../assets/logo/logo.png";
 // import instagram from "../../assets/icons/instagram.png";
-import whatsapp from "../../assets/icons/whatsapp.png";
+// import whatsapp from "../../assets/icons/whatsapp.png";
 // import facebook from "../../assets/icons/facebook.png";
 import { theme } from "../../theme/theme";
 
@@ -18,13 +18,21 @@ const Footer: React.FC<IBgColor> = ({ color }) => {
       <Styled.Shadow>
         <Styled.MainContainer>
           <Styled.LogoContainer>
-            {/* <Styled.LogoImg src={footerLogo} alt="" /> */}
+            <Styled.LogoSpan>MEU</Styled.LogoSpan>
+            <Styled.LogoImg src={footerLogo} alt="" />
+            <Styled.LogoSpan
+              style={{
+                color: theme.colors.blue.palete,
+              }}
+            >
+              INGRESSO
+            </Styled.LogoSpan>
           </Styled.LogoContainer>
-          <Styled.IconsContainer>
+          {/* <Styled.IconsContainer>
             <Styled.Icons src={whatsapp} />
-            {/* <Styled.Icons src={instagram} />
-            <Styled.Icons src={facebook} /> */}
-          </Styled.IconsContainer>
+            <Styled.Icons src={instagram} />
+            <Styled.Icons src={facebook} />
+          </Styled.IconsContainer> */}
         </Styled.MainContainer>
         <Styled.FooterContact>
           <Styled.FooterSpan>
@@ -34,9 +42,9 @@ const Footer: React.FC<IBgColor> = ({ color }) => {
             </a>
           </Styled.FooterSpan>
         </Styled.FooterContact>
-        <Styled.CopyDiv>
-          Copyright {new Date().getFullYear()} © Julius Soft House
-        </Styled.CopyDiv>
+        {/* <Styled.CopyDiv>
+          Copyright {new Date().getFullYear()} © 
+        </Styled.CopyDiv> */}
       </Styled.Shadow>
     </Styled.Container>
   );

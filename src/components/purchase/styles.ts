@@ -20,7 +20,7 @@ export const Container = styled.div`
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  color: ${({ theme }) => theme.colors.white.normal};
+  color: ${({ theme }) => theme.colors.blue.palete};
   font-family: ${({ theme }) => theme.fonts.secundary};
   margin-top: 1.5vh;
 `;
@@ -108,8 +108,8 @@ display: flex;
 flex-direction: column;
 position: absolute;
 place-self: end;
-margin-right: 2vw;
-margin-top: -8vh;
+margin-right: 1vw;
+margin-top: -1vh;
 align-items: center;
 font-size: ${({ theme }) => theme.fontSize.md};
 color: ${({ theme }) => theme.colors.white.normal};
@@ -117,3 +117,9 @@ font-family: ${({ theme }) => theme.fonts.secundary};
 border-radius: 25px;
  padding: 1vh;
 `;
+
+export const TktDetail = styled.div`
+  display: flex;
+  margin-bottom: 3vh;
+  flex-direction: column;
+  `;

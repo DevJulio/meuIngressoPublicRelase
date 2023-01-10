@@ -18,6 +18,7 @@ const eventsProps: TCardProps[] = [
     year: "2022",
     id: "1",
     calendar: new Date(),
+    status: "",
     ticketColor: theme.colors.orange.palete,
     prices: [
       {
@@ -53,6 +54,7 @@ const eventsProps: TCardProps[] = [
     year: "2022",
     id: "2",
     calendar: new Date(),
+    status: "",
     ticketColor: theme.colors.black.normal,
     prices: [
       {
@@ -89,6 +91,7 @@ const eventsProps: TCardProps[] = [
     year: "2022",
     id: "3",
     calendar: new Date(),
+    status: "",
     ticketColor: "",
     prices: [
       {
@@ -124,6 +127,7 @@ const eventsProps: TCardProps[] = [
     year: "2022",
     id: "4",
     calendar: new Date(),
+    status: "",
     ticketColor: "",
     prices: [
       {
@@ -159,6 +163,7 @@ const eventsProps: TCardProps[] = [
     year: "2022",
     id: "5",
     calendar: new Date(),
+    status: "",
     ticketColor: "",
     prices: [
       {
@@ -194,6 +199,7 @@ const eventsProps: TCardProps[] = [
     year: "2022",
     id: "6",
     calendar: new Date(),
+    status: "",
     ticketColor: "",
     prices: [
       {

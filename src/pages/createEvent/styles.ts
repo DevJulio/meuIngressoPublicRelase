@@ -185,3 +185,22 @@ export const InputCheckbox = styled.input.attrs(() => ({
   margin-top: 1vh;
     place-self: center;
 `;
+export const Spacer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 14vw;
+  height: 7vh;
+  border-radius: 25px;
+  position: absolute;
+  margin-left: 5vw;
+  margin-top: -2vh;
+  align-items: center;
+  font-size: ${({ theme }) => theme.fontSize.xlg};
+  color: ${({ theme }) => theme.colors.white.normal};
+  font-family: ${({ theme }) => theme.fonts.secundary};
+  background: rgba(255, 255, 255, 0);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  place-content: center;
+`;

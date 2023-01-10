@@ -10,5 +10,18 @@ export const BtnsContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 16vh;
+  height: 13vh;
   `;
+
+export const Title = styled.span`
+font-size: ${({ theme }) => theme.fontSize.md2};
+color: ${({ theme }) => theme.colors.blue.palete};
+font-family: ${({ theme }) => theme.fonts.primary};
+  `;
+export const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  margin-top: 5vh;
+  margin-left: 2vh;
+ `;

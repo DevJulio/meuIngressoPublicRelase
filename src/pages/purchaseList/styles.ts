@@ -48,3 +48,20 @@ export const InfoContainer = styled.div`
   margin-top: 20px;
   place-items: flex-start;
 `;
+export const Title = styled.span`
+  color: ${({ theme }) => theme.colors.white.normal};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: 60px;
+
+  @media ${({ theme }) => theme.devices.tablet} {
+    text-align: center;
+  }
+`;
+export const NoData = styled.div`
+  place-content: center;
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+  background-color: ${({ theme }) => theme.colors.orange.palete};
+   place-items: center;
+`;

@@ -27,7 +27,7 @@ export const Input = styled.input`
   margin-top: 4vh;
   border-radius: 10px;
   font-size: 12px;
-  background-color: ${({ theme }) => theme.colors.orange.palete};
+  background-color: ${({ theme }) => theme.colors.green.normal};
   color: ${({ theme }) => theme.colors.gray.light};
   padding: 1em;
   @media ${({ theme }) => theme.devices.tablet} {

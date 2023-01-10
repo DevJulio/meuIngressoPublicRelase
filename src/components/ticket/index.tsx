@@ -6,28 +6,66 @@ import Modal from "../modal";
 import ButtonPrimary from "../btn";
 import { theme } from "../../theme/theme";
 import { message } from "antd";
+import api from "../../services/api";
 
 interface ITicket {
   data: TCardProps;
   isAdm?: boolean;
+  isInfo?: boolean;
 }
 
-const Ticket: React.FC<ITicket> = ({ data, isAdm = false }) => {
+const Ticket: React.FC<ITicket> = ({ data, isAdm = false, isInfo = false }) => {
   const navigate = useNavigate();
   const [modal, setModal] = useState<boolean>(false);
-  const [eventToBeDisabled, setEventToBeDisabled] = useState<string>("");
+  const [eventToBeChanged, setEventToBeChanged] = useState<string>("");
 
   const handleClose = () => {
     setModal(false);
   };
 
   const disableEvent = async () => {
-    message.success("Desativado com sucesso!");
+    try {
+      const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
+      api.defaults.headers["Authorization"] = `${tokenObj}`;
+      const response = await api.put(`/disableEvent/${eventToBeChanged}`);
+      if (response.status === 200) {
+        message.success("Desativado com sucesso!");
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    } catch (error: any) {
+      if (error.response.status === 401) {
+        message.error("Sessão expirada, faça login novamente!");
+        setTimeout(() => {
+          navigate("/adm/login");
+        }, 4000);
+      }
+      message.error("Verifique os dados e tente novamente!");
+    }
     handleClose();
   };
 
   const enableEvent = async () => {
-    message.success("Ativado com sucesso!");
+    try {
+      const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
+      api.defaults.headers["Authorization"] = `${tokenObj}`;
+      const response = await api.put(`/enableEvent/${eventToBeChanged}`);
+      if (response.status === 200) {
+        message.success("Ativado com sucesso!");
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    } catch (error: any) {
+      if (error.response.status === 401) {
+        message.error("Sessão expirada, faça login novamente!");
+        setTimeout(() => {
+          navigate("/adm/login");
+        }, 4000);
+      }
+      message.error("Verifique os dados e tente novamente!");
+    }
     handleClose();
   };
 
@@ -42,30 +80,30 @@ const Ticket: React.FC<ITicket> = ({ data, isAdm = false }) => {
         <>
           <Modal title={"Atenção!"} handleClose={handleClose}>
             <Styled.TxtContainer>
-              {data.isEnabled && (
+              {data.status === "active" && (
                 <Styled.SpanTitleAux>
                   Você Realmente deseja desativar o evento?
                 </Styled.SpanTitleAux>
               )}
-              {!data.isEnabled && (
+              {data.status === "disabled" && (
                 <Styled.SpanTitleAux>
                   Você Realmente deseja ativar o evento?
                 </Styled.SpanTitleAux>
               )}
 
-              {data.isEnabled && (
+              {data.status === "active" && (
                 <Styled.Span>
                   Isso fará com que o evento não seja mais encontrado no app
                 </Styled.Span>
               )}
-              {!data.isEnabled && (
+              {data.status === "disabled" && (
                 <Styled.Span>
                   Isso fará com que o evento seja encontrado no app.
                 </Styled.Span>
               )}
             </Styled.TxtContainer>
             <Styled.BtnsContainer>
-              {data.isEnabled && (
+              {data.status === "active" && (
                 <ButtonPrimary
                   bgColor={theme.colors.green.normal}
                   label={"Continuar"}
@@ -74,7 +112,7 @@ const Ticket: React.FC<ITicket> = ({ data, isAdm = false }) => {
                   }}
                 />
               )}
-              {!data.isEnabled && (
+              {data.status === "disabled" && (
                 <ButtonPrimary
                   bgColor={theme.colors.green.normal}
                   label={"Continuar"}
@@ -96,7 +134,9 @@ const Ticket: React.FC<ITicket> = ({ data, isAdm = false }) => {
       <Styled.SpanAndIcon
         onClick={() => {
           localStorage.setItem("eventId", data.id);
-          navigate("/detalhes");
+          if (!isAdm && !isInfo) {
+            navigate("/detalhes");
+          }
         }}
       >
         <Styled.Spacer>
@@ -156,25 +196,38 @@ const Ticket: React.FC<ITicket> = ({ data, isAdm = false }) => {
                 }}
               />
             </Styled.BtnContainer>
-            {data.isEnabled && (
+            {data.status === "active" && (
               <ButtonPrimary
                 label={"Desativar evento"}
                 action={() => {
-                  setEventToBeDisabled(data.id);
+                  setEventToBeChanged(data.id);
                   setModal(true);
                 }}
               />
             )}
-            {!data.isEnabled && (
+            {data.status === "disabled" && (
               <ButtonPrimary
+                bgColor={theme.colors.blue.palete}
                 label={"Ativar evento"}
                 action={() => {
-                  setEventToBeDisabled(data.id);
+                  setEventToBeChanged(data.id);
                   setModal(true);
                 }}
               />
             )}
           </Styled.BtnsContainer>
+        </>
+      )}
+      {isInfo && (
+        <>
+          <ButtonPrimary
+            bgColor={theme.colors.blue.palete}
+            label={"Selecionar evento"}
+            action={() => {
+              localStorage.setItem("eventIdData", data.id);
+              navigate("/adm/lista-de-compras");
+            }}
+          />
         </>
       )}
     </>

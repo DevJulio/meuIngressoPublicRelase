@@ -9,6 +9,7 @@ export const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+justify-content: center;
   background-color: ${({ theme }) => theme.colors.yellow.normal};
   color: ${({ theme }) => theme.colors.white.normal};
   //margin-top: 60px;
@@ -19,9 +20,10 @@ export const LogoContainer = styled.div`
   padding-left: 1vw;
   padding-top: 2vh;
   padding-bottom: 2vh;
+  align-items: center;
+
+  justify-content: end;
   @media ${({ theme }) => theme.devices.tablet} {
-    width: 27%;
-    justify-content: end;
   }
 `;
 export const LogoImg = styled.img`
@@ -49,7 +51,7 @@ export const FooterSpan = styled.span`
   a {
     text-align: center;
     text-decoration: none;
-    color: ${({ theme }) => theme.colors.yellow.normal};
+    color: ${({ theme }) => theme.colors.white.normal};
     font-family: ${({ theme }) => theme.fonts.primary};
     margin-top: 5px;
 
@@ -116,3 +118,8 @@ export const Shadow = styled.div`
   @media ${({ theme }) => theme.devices.tablet} {
    }
 `;
+export const LogoSpan = styled.span`
+  color: ${({ theme }) => theme.colors.white.normal};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+  `;

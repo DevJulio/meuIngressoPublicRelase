@@ -37,13 +37,13 @@ interface Props {
 }
 
 const IngressoReady: React.FC<Props> = ({ tkt }) => {
-  
   window.scrollTo(0, 0);
 
   const [fontColor, setFontColor] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const tktDate = new Date(tkt.ticketDate).toLocaleDateString();
+
   useEffect(() => {
     if (eventsProps[0].ticketColor === "#000000") {
       setFontColor(theme.colors.white.normal);
@@ -53,7 +53,7 @@ const IngressoReady: React.FC<Props> = ({ tkt }) => {
     }
   }, []);
   // TODO: Alterar link
-  const value = `https://www.amog.com.br/compras/burn/?id=${tkt.id}`;
+  const value = `http://localhost:3000/adm/liberar-entrada?id=${tkt.id}`;
 
   function downloadURI(uri: string, name: string) {
     const link = document.createElement("a");

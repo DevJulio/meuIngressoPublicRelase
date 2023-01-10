@@ -41,10 +41,8 @@ const Detail: React.FC = () => {
       try {
         const response = await api.get(`/getEvent/${eventId}`);
         if (response.status === 200) {
-          if (response.status === 200) {
-            const event = response.data;
-            setEvent(event);
-          }
+          const event = response.data;
+          setEvent(event);
         }
       } catch (error: any) {
         console.log(error);
@@ -208,108 +206,123 @@ const Detail: React.FC = () => {
         </>
       )}
       <Header />
-      <BorderPage
-        insideColor={theme.colors.orange.palete}
-        outsideColor={theme.colors.orange.palete}
-        children={
-          <>
-            {event && (
-              <Styled.Container>
-                <Styled.Banner src={event.adicionalPictureUrl} />
-                <Styled.ContainerData>
-                  <span>{event.title}</span>
-                  <Styled.ContainerRow>
-                    <span
-                      style={{
-                        fontFamily: theme.fonts.primary,
-                        fontSize: theme.fontSize.md2,
-                      }}
-                    >
-                      {event.place}
-                    </span>
-                  </Styled.ContainerRow>
-                  <Styled.PriceSpanAux>A partir de:</Styled.PriceSpanAux>
-                  <Styled.PriceSpan>R${event.price}</Styled.PriceSpan>
-                </Styled.ContainerData>
 
-                <Styled.InfoContainerRow>
-                  <Styled.TitleAndLogo>
-                    <Styled.LogoImg src={calendario} />
-                    <Styled.Spacer>
-                      <span
-                        style={{
-                          paddingTop: "2px",
-                        }}
-                      >
-                        {event.day}
-                      </span>
+      <Styled.MainContainer>
+        <BorderPage
+          insideColor={theme.colors.orange.palete}
+          outsideColor={theme.colors.orange.palete}
+          children={
+            <>
+              {event && (
+                <Styled.Container>
+                  <Styled.Banner src={event.adicionalPictureUrl} />
+                  <Styled.ContainerData>
+                    <span>{event.title}</span>
+                    <Styled.ContainerRow>
                       <span
                         style={{
                           fontFamily: theme.fonts.primary,
+                          fontSize: theme.fontSize.md2,
                         }}
                       >
-                        {event.month}
+                        {event.place}
+                      </span>
+                    </Styled.ContainerRow>
+                    <Styled.PriceSpanAux>A partir de:</Styled.PriceSpanAux>
+                    <Styled.PriceSpan>R${event.price}</Styled.PriceSpan>
+                  </Styled.ContainerData>
+
+                  <Styled.InfoContainerRow>
+                    <Styled.TitleAndLogo>
+                      <Styled.LogoImg src={calendario} />
+                      <Styled.Spacer>
+                        <span
+                          style={{
+                            paddingTop: "2px",
+                          }}
+                        >
+                          {event.day}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: theme.fonts.primary,
+                          }}
+                        >
+                          {event.month}
+                        </span>
+                      </Styled.Spacer>
+                    </Styled.TitleAndLogo>
+
+                    <Styled.Spacer
+                      style={{
+                        marginLeft: "51vw",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: theme.fonts.primary,
+                          fontSize: theme.fontSize.sm,
+                        }}
+                      >
+                        {weekDay}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: theme.fonts.secundary,
+                          fontSize: theme.fontSize.sm,
+                        }}
+                      >
+                        {formatedTime}
                       </span>
                     </Styled.Spacer>
-                  </Styled.TitleAndLogo>
+                  </Styled.InfoContainerRow>
+                  <Styled.Description>
+                    <Styled.TitleAndRating>
+                      <Styled.SpanTitle>Detalhes do evento:</Styled.SpanTitle>
+                      <Styled.RatingContainer>
+                        <Rating size={35} initialValue={4.5} allowFraction />
+                      </Styled.RatingContainer>
+                    </Styled.TitleAndRating>
+                    <Styled.SpanDescription>
+                      {event.description}
+                    </Styled.SpanDescription>
+                  </Styled.Description>
+                  <Styled.SpanTitle>Ingressos disponíveis:</Styled.SpanTitle>
 
-                  <Styled.Spacer
-                    style={{
-                      marginLeft: "51vw",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: theme.fonts.primary,
-                        fontSize: theme.fontSize.sm,
-                      }}
-                    >
-                      {weekDay}
-                    </span>
-                    <span
-                      style={{
-                        fontFamily: theme.fonts.secundary,
-                        fontSize: theme.fontSize.sm,
-                      }}
-                    >
-                      {formatedTime}
-                    </span>
-                  </Styled.Spacer>
-                </Styled.InfoContainerRow>
-                <Styled.Description>
-                  <Styled.TitleAndRating>
-                    <Styled.SpanTitle>Detalhes do evento:</Styled.SpanTitle>
-                    <Styled.RatingContainer>
-                      <Rating size={35} initialValue={4.5} allowFraction />
-                    </Styled.RatingContainer>
-                  </Styled.TitleAndRating>
-                  <Styled.SpanDescription>
-                    {event.description}
-                  </Styled.SpanDescription>
-                </Styled.Description>
-                <Styled.SpanTitle>Ingressos disponíveis:</Styled.SpanTitle>
-
-                <Styled.TicketsContainer>
-                  {event.prices.map((item: any, id) => (
-                    <Styled.Tickets
-                      id={id.toString()}
-                      onClick={() => {
-                        setCount(1);
-                        setTicketIndex(id);
-                        setQtdModal(true);
-                      }}
-                    >
-                      <span> {item.title}</span>
-                      <span>R$ {item.price}</span>
-                    </Styled.Tickets>
-                  ))}
-                </Styled.TicketsContainer>
-              </Styled.Container>
-            )}
-          </>
-        }
-      />
+                  <Styled.TicketsContainer>
+                    {event.prices.map((item: any, id) => (
+                      <Styled.Tickets
+                        id={id.toString()}
+                        onClick={() => {
+                          setCount(1);
+                          setTicketIndex(id);
+                          setQtdModal(true);
+                        }}
+                      >
+                        <span> {item.title}</span>
+                        <span>R$ {item.price}</span>
+                      </Styled.Tickets>
+                    ))}
+                  </Styled.TicketsContainer>
+                </Styled.Container>
+              )}
+            </>
+          }
+        />
+      </Styled.MainContainer>
+      <Styled.DesktopContainer>
+        <Styled.Title>
+          A versão para telas grandes em desenvolvimento.
+        </Styled.Title>
+        <Styled.Title
+          style={{
+            fontFamily: theme.fonts.secundary,
+          }}
+        >
+          Versão para dispositivos móveis completa. Acesse pelo seu celular!
+        </Styled.Title>
+      </Styled.DesktopContainer>
       <Footer />
     </>
   );

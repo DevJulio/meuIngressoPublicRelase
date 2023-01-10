@@ -14,7 +14,7 @@ import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import TokenValidate from "../../components/validateToken";
 
-const Events: React.FC = () => {
+const EventsInfo: React.FC = () => {
   const [allEvents, setAllEvents] = useState<TCardProps[]>([]);
   const [eventsToBeRender, setEventsToBeRender] = useState<TCardProps[]>([]);
   const navigate = useNavigate();
@@ -31,14 +31,16 @@ const Events: React.FC = () => {
         api.defaults.headers["Authorization"] = `${tokenObj}`;
         const response = await api.get(`/getAllMyEvents/${userUid.uid}`);
         if (response.status === 200) {
-          const parsed = response.data.map((event: any) => {
-            return {
-              id: event.id,
-              ...event.data,
-            };
-          });
-          setAllEvents(parsed as TCardProps[]);
-          setEventsToBeRender(parsed as TCardProps[]);
+          if (response.status === 200) {
+            const parsed = response.data.map((event: any) => {
+              return {
+                id: event.id,
+                ...event.data,
+              };
+            });
+            setAllEvents(parsed as TCardProps[]);
+            setEventsToBeRender(parsed as TCardProps[]);
+          }
         }
       } catch (error: any) {
         if (error.response.status === 401) {
@@ -104,7 +106,7 @@ const Events: React.FC = () => {
                 <>
                   {eventsToBeRender.length ? (
                     eventsToBeRender.map((event) => (
-                      <Ticket data={event} isAdm />
+                      <Ticket data={event} isInfo />
                     ))
                   ) : (
                     <></>
@@ -125,9 +127,10 @@ const Events: React.FC = () => {
           </>
         }
       />
+
       <Footer />
     </>
   );
 };
 
-export default Events;
+export default EventsInfo;

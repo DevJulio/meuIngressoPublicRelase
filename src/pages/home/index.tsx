@@ -5,10 +5,10 @@ import { apiMapsAuth } from "../../config";
 import { theme } from "../../theme/theme";
 import marker from "../../assets/icons/marker.png";
 import lupa from "../../assets/icons/lupa.png";
+import CookieConsent, { Cookies } from "react-cookie-consent";
 
 import * as Styled from "./styles";
 import Ticket from "../../components/ticket";
-import eventsProps from "./eventProps";
 import Footer from "../../components/footer";
 import categories from "./categories";
 import { TCardProps } from "../../components/ticket/card";
@@ -106,59 +106,92 @@ const Home: React.FC = () => {
   return (
     <>
       <Header />
-      <Styled.Container>
-        <Styled.TitleAndLogo>
-          <Styled.LogoImg src={marker} alt="icone" />
-          <Styled.Title>{city}</Styled.Title>
-        </Styled.TitleAndLogo>
-      </Styled.Container>
-      <Styled.SelectContainer>
-        <Styled.LogoImg
-          src={lupa}
-          alt="icone"
-          style={{
-            paddingLeft: "0vw",
-          }}
+      <Styled.MainContainer>
+        <Styled.Container>
+          <Styled.TitleAndLogo>
+            <Styled.LogoImg src={marker} alt="icone" />
+            <Styled.Title>{city}</Styled.Title>
+          </Styled.TitleAndLogo>
+        </Styled.Container>
+        <Styled.SelectContainer>
+          <Styled.LogoImg
+            src={lupa}
+            alt="icone"
+            style={{
+              paddingLeft: "0vw",
+            }}
+          />
+          <Styled.Select
+            name="select"
+            onChange={(e) => {
+              handleChange(e.target.value);
+            }}
+          >
+            <option selected disabled value="0">
+              Escolha a categoria.
+            </option>
+            {categories.map((fbb) => (
+              <option key={fbb.value} value={fbb.value}>
+                {fbb.label}
+              </option>
+            ))}
+          </Styled.Select>
+        </Styled.SelectContainer>
+        <InvertBorderPage
+          insideColor={theme.colors.orange.palete}
+          outsideColor={theme.colors.white.normal}
+          children={
+            <>
+              {eventsToBeRender.length ? (
+                eventsToBeRender.map((event) => <Ticket data={event} />)
+              ) : (
+                <></>
+              )}
+              {eventsToBeRender.length === 0 && (
+                <Styled.Title
+                  style={{
+                    marginTop: "3vh",
+                    color: theme.colors.white.normal,
+                  }}
+                >
+                  Sem eventos!
+                </Styled.Title>
+              )}
+            </>
+          }
         />
-        <Styled.Select
-          name="select"
-          onChange={(e) => {
-            handleChange(e.target.value);
+      </Styled.MainContainer>
+      <Styled.DesktopContainer>
+        <Styled.Title>
+          A versão para telas grandes em desenvolvimento.
+        </Styled.Title>
+        <Styled.Title
+          style={{
+            fontFamily: theme.fonts.secundary,
           }}
         >
-          <option selected disabled value="0">
-            Escolha a categoria.
-          </option>
-          {categories.map((fbb) => (
-            <option key={fbb.value} value={fbb.value}>
-              {fbb.label}
-            </option>
-          ))}
-        </Styled.Select>
-      </Styled.SelectContainer>
-      <InvertBorderPage
-        insideColor={theme.colors.orange.palete}
-        outsideColor={theme.colors.white.normal}
-        children={
-          <>
-            {eventsToBeRender.length ? (
-              eventsToBeRender.map((event) => <Ticket data={event} />)
-            ) : (
-              <></>
-            )}
-            {eventsToBeRender.length === 0 && (
-              <Styled.Title
-                style={{
-                  marginTop: "3vh",
-                  color: theme.colors.white.normal,
-                }}
-              >
-                Sem eventos!
-              </Styled.Title>
-            )}
-          </>
-        }
-      />
+          Versão para dispositivos móveis completa. Acesse pelo seu celular!
+        </Styled.Title>
+      </Styled.DesktopContainer>
+      <CookieConsent
+        location="bottom"
+        buttonText="Aceito"
+        cookieName="meuIngressoCookie"
+        style={{ background: "#2B373B" }}
+        buttonStyle={{ color: "#4e503b", fontSize: "25px" }}
+        expires={150}
+      >
+        Esse site usa cookies para melhorar sua experiência. Clique
+        <a
+          href="/politica-privacidade"
+          style={{ textDecoration: "none", color: "#ffd42d" }}
+        >
+          {" "}
+          aqui
+        </a>{" "}
+        para saber mais.
+      </CookieConsent>
+
       <Footer />
     </>
   );

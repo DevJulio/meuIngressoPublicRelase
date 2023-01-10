@@ -22,5 +22,6 @@ export type TCardProps = {
   year: string;
   ticketColor: string
   calendar: date
+  status: string;
   prices: TPrices[]
 }

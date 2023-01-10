@@ -24,6 +24,7 @@ import {
 } from "firebase/storage";
 import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import TokenValidate from "../../components/validateToken";
 
 const CreateEvent: React.FC = () => {
   const [title, setTitle] = useState<string>("");
@@ -160,7 +161,6 @@ const CreateEvent: React.FC = () => {
           setPrices(values);
           break;
         case "ticketDate":
-          console.log(event);
           values[index].ticketDate = event;
           setPrices(values);
           break;
@@ -249,7 +249,6 @@ const CreateEvent: React.FC = () => {
 
   const validateFields = () => {
     const userId: any = sessionStorage.getItem("@AuthFirebase:user");
-    console.log(JSON.parse(userId).uid);
     const validateFields = [];
     if (!title) {
       validateFields.push("Informe um título antes de prosseguir!");
@@ -300,239 +299,269 @@ const CreateEvent: React.FC = () => {
       )}
 
       <Header />
-      <BorderPage
-        insideColor={theme.colors.orange.palete}
-        outsideColor={theme.colors.orange.palete}
+
+      <TokenValidate
         children={
           <>
-            <Styled.Container>
-              <Styled.Atention>Atenção!</Styled.Atention>
-              <Styled.Atention2>Instruções de cadastro:</Styled.Atention2>
-              <Styled.ItemSpan>
-                Preencha todos os campos a baixo e escolha as melhores fotos!
-              </Styled.ItemSpan>
-              <Styled.MainContainer>
-                <Styled.Title>Dados do evento:</Styled.Title>
-              </Styled.MainContainer>
-              <Styled.Aux>
-                <Styled.FormContainer>
-                  <Input Label={"Título do evento"} setValue={setTitle}></Input>
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <Input
-                    setValue={setPlace}
-                    Label={"Endereço do evento"}
-                  ></Input>
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <Select
-                    label={"Categoria do evento"}
-                    setValue={setCategory}
-                    options={options}
-                  ></Select>
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <Styled.ItemSpan>Descrição do evento.</Styled.ItemSpan>
-                  <TextArea
-                    rows={4}
-                    value={description}
-                    placeholder="Descrição e vantagens"
-                    onChange={(event: any) =>
-                      setDescription(event.target.value)
-                    }
-                  />
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <Styled.ItemSpan>
-                    Selecione a data de inicio do evento.
-                  </Styled.ItemSpan>
-                  <Calendar
-                    onChange={(date: Date) => {
-                      handleCalendar(date);
-                    }}
-                    value={calendar}
-                    minDate={new Date()}
-                    locale="PT-br"
-                  />
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <Styled.ItemSpan>
-                    Selecione a data final do evento.
-                  </Styled.ItemSpan>
-                  <Calendar
-                    onChange={(date: Date) => {
-                      handleCalendarFinish(date);
-                    }}
-                    value={calendarFinish}
-                    minDate={new Date()}
-                    locale="PT-br"
-                  />
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <Styled.ItemSpan>
-                    Selecione o horário do evento.
-                  </Styled.ItemSpan>
-
-                  <TimePicker
-                    onChange={(val: any) => {
-                      console.log(val);
-                      setTime(val);
-                    }}
-                    value={time as any}
-                    defaultValue={dayjs("00:00", format)}
-                    format={format}
-                  />
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <Styled.ItemSpan>Selecione a cor do ingresso</Styled.ItemSpan>
-                  <Styled.Centralize>
-                    <SketchPicker
-                      color={ticketColor}
-                      width={"300px"}
-                      onChangeComplete={(color) => {
-                        setTicketColor(color.hex);
+            <BorderPage
+              insideColor={theme.colors.orange.palete}
+              outsideColor={theme.colors.orange.palete}
+              children={
+                <>
+                  <Styled.Container>
+                    {/* <Styled.Spacer
+                      onClick={() => {
+                        navigate("/adm");
                       }}
-                    />
-                  </Styled.Centralize>
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <Styled.ItemSpan>
-                    Carregue o banner principal do evento (Aparecerá na
-                    listagem)
-                  </Styled.ItemSpan>
-                  <Styled.Centralize>
-                    <Styled.FileInput
-                      type="file"
-                      id="mainBanner"
-                      onChange={(e) => {
-                        changeInput(e, true);
-                      }}
-                    />
-                  </Styled.Centralize>
-                </Styled.FormContainer>
-                <Styled.FormContainer>
-                  <Styled.ItemSpan>
-                    Carregue o banner secundário (Maior e mais detalhes)
-                  </Styled.ItemSpan>
-                  <Styled.Centralize>
-                    <Styled.FileInput
-                      type="file"
-                      id="mainBanner"
-                      onChange={(e) => {
-                        changeInput(e, false);
-                      }}
-                    />
-                  </Styled.Centralize>
-                </Styled.FormContainer>
-                <Styled.FormContainer
-                  style={{
-                    placeSelf: "center",
-                  }}
-                >
-                  <Styled.ItemSpan style={{ fontSize: "20px" }}>
-                    Detalhes dos ingresssos. Caso seja necessario, adicione mais
-                    um ao clicar no botão "Adicionar ingresso".
-                  </Styled.ItemSpan>
-
-                  {prices.map((field, index) => (
-                    <Styled.TicketCard key={index}>
-                      <Styled.Close onClick={() => handleRemoveField(index)}>
-                        X
-                      </Styled.Close>
+                    >
+                      ←
+                    </Styled.Spacer> */}
+                    <Styled.Atention>Atenção!</Styled.Atention>
+                    <Styled.Atention2>Instruções de cadastro:</Styled.Atention2>
+                    <Styled.ItemSpan>
+                      Preencha todos os campos a baixo e escolha as melhores
+                      fotos!
+                    </Styled.ItemSpan>
+                    <Styled.MainContainer>
+                      <Styled.Title>Dados do evento:</Styled.Title>
+                    </Styled.MainContainer>
+                    <Styled.Aux>
                       <Styled.FormContainer>
-                        <Styled.ItemSpan>
-                          Título do ingresso. (Ex: Pista)
-                        </Styled.ItemSpan>
-                        <Styled.Input
-                          type="text"
-                          value={field.title}
-                          onChange={(
-                            event: React.ChangeEvent<HTMLInputElement>
-                          ) => handleFieldChange(index, event, "title")}
-                        />
+                        <Input
+                          Label={"Título do evento"}
+                          setValue={setTitle}
+                        ></Input>
                       </Styled.FormContainer>
                       <Styled.FormContainer>
-                        <Styled.ItemSpan>
-                          Descrição do ingresso.
-                        </Styled.ItemSpan>
+                        <Input
+                          setValue={setPlace}
+                          Label={"Endereço do evento"}
+                        ></Input>
+                      </Styled.FormContainer>
+                      <Styled.FormContainer>
+                        <Select
+                          label={"Categoria do evento"}
+                          setValue={setCategory}
+                          options={options}
+                        ></Select>
+                      </Styled.FormContainer>
+                      <Styled.FormContainer>
+                        <Styled.ItemSpan>Descrição do evento.</Styled.ItemSpan>
                         <TextArea
                           rows={4}
-                          value={field.description}
+                          value={description}
                           placeholder="Descrição e vantagens"
                           onChange={(event: any) =>
-                            handleFieldChange(index, event, "description")
+                            setDescription(event.target.value)
                           }
                         />
                       </Styled.FormContainer>
-
-                      <Styled.FormContainer>
-                        <Styled.ItemSpan>Preço do ingresso.</Styled.ItemSpan>
-                        <Styled.Input
-                          type="text"
-                          value={field.price}
-                          onChange={(e) => {
-                            handleFieldChange(index, e, "", true);
-                          }}
-                        />
-                      </Styled.FormContainer>
                       <Styled.FormContainer>
                         <Styled.ItemSpan>
-                          Selecione o dia da validade do ingresso.
+                          Selecione a data de inicio do evento.
                         </Styled.ItemSpan>
                         <Calendar
                           onChange={(date: Date) => {
-                            handleFieldChange(index, date, "ticketDate", false);
+                            handleCalendar(date);
                           }}
-                          value={
-                            field.ticketDate
-                              ? new Date(field.ticketDate)
-                              : new Date()
-                          }
+                          value={calendar}
                           minDate={new Date()}
                           locale="PT-br"
                         />
                       </Styled.FormContainer>
-
                       <Styled.FormContainer>
                         <Styled.ItemSpan>
-                          Esse ingresso da acesso a todos os dias do evento?
+                          Selecione a data final do evento.
                         </Styled.ItemSpan>
-                        <Styled.InputCheckbox
-                          checked={field.isComplete}
-                          onChange={(event) => {
-                            handleFieldChange(index, event, "isComplete");
+                        <Calendar
+                          onChange={(date: Date) => {
+                            handleCalendarFinish(date);
                           }}
-                          type="checkbox"
+                          value={calendarFinish}
+                          minDate={new Date()}
+                          locale="PT-br"
                         />
                       </Styled.FormContainer>
-                    </Styled.TicketCard>
-                  ))}
-                  <Styled.Aux
-                    style={{
-                      marginTop: "3vh",
-                      marginBottom: "3vh",
-                    }}
-                  >
-                    <ButtonPrimary
-                      label={"Adicionar ingresso"}
-                      action={handleAddField}
-                      bgColor={theme.colors.white.normal}
-                      color={theme.colors.orange.palete}
-                    />
-                  </Styled.Aux>
-                </Styled.FormContainer>
-              </Styled.Aux>
+                      <Styled.FormContainer>
+                        <Styled.ItemSpan>
+                          Selecione o horário do evento.
+                        </Styled.ItemSpan>
 
-              <Styled.Aux>
-                <ButtonPrimary
-                  bgColor={theme.colors.green.normal}
-                  label={"Finalizar cadastro"}
-                  action={() => {
-                    addImg(pictureUrl ? pictureUrl : null);
-                  }}
-                />
-              </Styled.Aux>
-            </Styled.Container>
+                        <TimePicker
+                          onChange={(val: any) => {
+                            setTime(val);
+                          }}
+                          value={time as any}
+                          defaultValue={dayjs("00:00", format)}
+                          format={format}
+                        />
+                      </Styled.FormContainer>
+                      <Styled.FormContainer>
+                        <Styled.ItemSpan>
+                          Selecione a cor do ingresso
+                        </Styled.ItemSpan>
+                        <Styled.Centralize>
+                          <SketchPicker
+                            color={ticketColor}
+                            width={"300px"}
+                            onChangeComplete={(color) => {
+                              setTicketColor(color.hex);
+                            }}
+                          />
+                        </Styled.Centralize>
+                      </Styled.FormContainer>
+                      <Styled.FormContainer>
+                        <Styled.ItemSpan>
+                          Carregue o banner principal do evento (Aparecerá na
+                          listagem)
+                        </Styled.ItemSpan>
+                        <Styled.Centralize>
+                          <Styled.FileInput
+                            type="file"
+                            id="mainBanner"
+                            onChange={(e) => {
+                              changeInput(e, true);
+                            }}
+                          />
+                        </Styled.Centralize>
+                      </Styled.FormContainer>
+                      <Styled.FormContainer>
+                        <Styled.ItemSpan>
+                          Carregue o banner secundário (Maior e mais detalhes)
+                        </Styled.ItemSpan>
+                        <Styled.Centralize>
+                          <Styled.FileInput
+                            type="file"
+                            id="mainBanner"
+                            onChange={(e) => {
+                              changeInput(e, false);
+                            }}
+                          />
+                        </Styled.Centralize>
+                      </Styled.FormContainer>
+                      <Styled.FormContainer
+                        style={{
+                          placeSelf: "center",
+                        }}
+                      >
+                        <Styled.ItemSpan style={{ fontSize: "20px" }}>
+                          Detalhes dos ingresssos. Caso seja necessario,
+                          adicione mais um ao clicar no botão "Adicionar
+                          ingresso".
+                        </Styled.ItemSpan>
+
+                        {prices.map((field, index) => (
+                          <Styled.TicketCard key={index}>
+                            <Styled.Close
+                              onClick={() => handleRemoveField(index)}
+                            >
+                              X
+                            </Styled.Close>
+                            <Styled.FormContainer>
+                              <Styled.ItemSpan>
+                                Título do ingresso. (Ex: Pista)
+                              </Styled.ItemSpan>
+                              <Styled.Input
+                                type="text"
+                                value={field.title}
+                                onChange={(
+                                  event: React.ChangeEvent<HTMLInputElement>
+                                ) => handleFieldChange(index, event, "title")}
+                              />
+                            </Styled.FormContainer>
+                            <Styled.FormContainer>
+                              <Styled.ItemSpan>
+                                Descrição do ingresso.
+                              </Styled.ItemSpan>
+                              <TextArea
+                                rows={4}
+                                value={field.description}
+                                placeholder="Descrição e vantagens"
+                                onChange={(event: any) =>
+                                  handleFieldChange(index, event, "description")
+                                }
+                              />
+                            </Styled.FormContainer>
+
+                            <Styled.FormContainer>
+                              <Styled.ItemSpan>
+                                Preço do ingresso.
+                              </Styled.ItemSpan>
+                              <Styled.Input
+                                type="text"
+                                value={field.price}
+                                onChange={(e) => {
+                                  handleFieldChange(index, e, "", true);
+                                }}
+                              />
+                            </Styled.FormContainer>
+                            <Styled.FormContainer>
+                              <Styled.ItemSpan>
+                                Selecione o dia da validade do ingresso.
+                              </Styled.ItemSpan>
+                              <Calendar
+                                onChange={(date: Date) => {
+                                  handleFieldChange(
+                                    index,
+                                    date,
+                                    "ticketDate",
+                                    false
+                                  );
+                                }}
+                                value={
+                                  field.ticketDate
+                                    ? new Date(field.ticketDate)
+                                    : new Date()
+                                }
+                                minDate={new Date()}
+                                locale="PT-br"
+                              />
+                            </Styled.FormContainer>
+
+                            <Styled.FormContainer>
+                              <Styled.ItemSpan>
+                                Esse ingresso da acesso a todos os dias do
+                                evento?
+                              </Styled.ItemSpan>
+                              <Styled.InputCheckbox
+                                checked={field.isComplete}
+                                onChange={(event) => {
+                                  handleFieldChange(index, event, "isComplete");
+                                }}
+                                type="checkbox"
+                              />
+                            </Styled.FormContainer>
+                          </Styled.TicketCard>
+                        ))}
+                        <Styled.Aux
+                          style={{
+                            marginTop: "3vh",
+                            marginBottom: "3vh",
+                          }}
+                        >
+                          <ButtonPrimary
+                            label={"Adicionar ingresso"}
+                            action={handleAddField}
+                            bgColor={theme.colors.white.normal}
+                            color={theme.colors.orange.palete}
+                          />
+                        </Styled.Aux>
+                      </Styled.FormContainer>
+                    </Styled.Aux>
+
+                    <Styled.Aux>
+                      <ButtonPrimary
+                        bgColor={theme.colors.green.normal}
+                        label={"Finalizar cadastro"}
+                        action={() => {
+                          addImg(pictureUrl ? pictureUrl : null);
+                        }}
+                      />
+                    </Styled.Aux>
+                  </Styled.Container>
+                </>
+              }
+            />
           </>
         }
       />

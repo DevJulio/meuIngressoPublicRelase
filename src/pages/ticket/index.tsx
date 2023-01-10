@@ -18,18 +18,62 @@ const TickeReady: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const id = sessionStorage.getItem("@AuthFirebase:uniqueCode");
     window.scrollTo(0, 0);
-
     const fetchData = async () => {
-      try {
-        const id = sessionStorage.getItem("@AuthFirebase:uniqueCode");
-        const response = await api.get(`/getTicketsToSave/${id}`);
-        if (response.status === 200) {
-          setTicket(response.data);
+      const status = sessionStorage.getItem("@AuthFirebase:uniqueCodeStatus");
+      if (status) {
+        try {
+          const response = await api.get(`/getTicketId/${id}`);
+          if (response.status === 200) {
+            sessionStorage.setItem("@AuthFirebase:uniqueCodeStatus", "false");
+
+            const tktsIds = response.data;
+            await Promise.all(
+              tktsIds.map(async (id: any) => {
+                try {
+                  await api.put(`/updateTicketStatus/${id.id}`);
+                } catch (error: any) {
+                  message.error("Verifique os dados e tente novamente!");
+                  return false;
+                }
+              })
+            ).then(async () => {
+              try {
+                const response = await api.get(`/getPurchasetId/${id}`);
+                if (response.status === 200) {
+                  const purchaseId = response.data[0].id;
+                  try {
+                    const response = await api.put(
+                      `/updatePurchaseStatus/${purchaseId}`
+                    );
+                    if (response.status === 200) {
+                      try {
+                        const response = await api.get(
+                          `/getTicketsToSave/${id}`
+                        );
+                        if (response.status === 200) {
+                          setTicket(response.data);
+                        }
+                      } catch (error: any) {
+                        console.log(error);
+                        message.error("Verifique os dados e tente novamente!");
+                      }
+                    }
+                  } catch (error: any) {
+                    message.error("Verifique os dados e tente novamente!");
+                    return false;
+                  }
+                }
+              } catch (error) {
+                console.log(error);
+                message.error("Verifique os dados e tente novamente!");
+              }
+            });
+          }
+        } catch (error: any) {
+          message.error("Verifique os dados e tente novamente!");
         }
-      } catch (error: any) {
-        console.log(error);
-        message.error("Verifique os dados e tente novamente!");
       }
     };
     fetchData();

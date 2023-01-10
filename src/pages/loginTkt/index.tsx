@@ -11,7 +11,7 @@ type TInputs = {
   password: string;
 };
 
-const Login: React.FC = () => {
+const LoginTkt: React.FC = () => {
   const { register, handleSubmit } = useForm<TInputs>();
   const localAuth: any = useContext(AuthContext);
   const navigate = useNavigate();
@@ -52,4 +52,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default LoginTkt;

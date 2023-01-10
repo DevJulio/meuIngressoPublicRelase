@@ -1,8 +1,7 @@
 import { theme } from "../../theme/theme";
 const width = window.screen.width;
-const diference = (width / 10) * 6.5 * -1;
+const diference = (width / 10) * 6.4 * -1;
 const formatDiference = diference.toString() + "px";
-
 const styles = {
   bmBurgerButton: {
     marginTop: "2.9vh",
@@ -45,7 +44,7 @@ const styles = {
   },
   bmItemList: {
     color: "#b8b7ad",
-    padding: "0.8em",
+    padding: "0em",
     height: "100%",
     display: "flex",
     flexDirection: "column",

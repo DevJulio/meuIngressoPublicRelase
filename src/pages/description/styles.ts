@@ -144,8 +144,8 @@ export const RatingContainer = styled.div`
 
 export const TicketsContainer = styled.div`
   display: flex;
-  overflow-x: scroll;
-  margin-bottom: 2vh;
+  overflow-y: scroll;
+   margin-bottom: 2vh;
   margin-top: 2vh;
 `;
 
@@ -157,11 +157,11 @@ export const Tickets = styled.div`
   color: ${({ theme }) => theme.colors.white.normal};
   justify-content: center;
   font-family: ${({ theme }) => theme.fonts.primary};
-  font-size: ${({ theme }) => theme.fontSize.md2};
+  font-size: 24px;
   border-style: solid;
   margin-left: 3vw;
   padding: 3vw;
-  min-width: 80px;
+  min-width:  fit-content;
 `;
 export const BtnsContainer = styled.div`
   padding-bottom: 20px;
@@ -211,4 +211,36 @@ export const ColContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+export const MainContainer = styled.div`
+display: none;
+@media ${({ theme }) => theme.devices.tablet} {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  }
+`
+
+export const DesktopContainer = styled.div`
+display: flex;
+flex-direction: column;
+width: 100%;
+@media ${({ theme }) => theme.devices.tablet} {
+  display: none;
+  }
+`
+export const Title = styled.span`
+  display: flex;
+  padding-left: 2vw;
+  width: 95%;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.blue.palete};
+
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+  @media ${({ theme }) => theme.devices.tablet} {
+    font-size: ${({ theme }) => theme.fontSize.xlg};
+    width: 100%;
+  }
 `;
