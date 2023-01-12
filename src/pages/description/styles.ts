@@ -27,7 +27,7 @@ export const ContainerData = styled.div`
   display: flex;
   width: fit-content;
   background-position: center;
-  width: 95%;
+  width: 95.5%;
   flex-direction: column;
   align-self: center;
   padding: 1vh;

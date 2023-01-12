@@ -41,6 +41,7 @@ const IngressoReady: React.FC<Props> = ({ tkt }) => {
 
   const [fontColor, setFontColor] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [loading2, setLoading2] = useState<boolean>(false);
 
   const tktDate = new Date(tkt.ticketDate).toLocaleDateString();
 
@@ -53,7 +54,7 @@ const IngressoReady: React.FC<Props> = ({ tkt }) => {
     }
   }, []);
   // TODO: Alterar link
-  const value = `http://localhost:3000/adm/liberar-entrada?id=${tkt.id}`;
+  const value = `http://meu-ingresso.com/adm/liberar-entrada?id=${tkt.id}`;
 
   function downloadURI(uri: string, name: string) {
     const link = document.createElement("a");
@@ -64,12 +65,19 @@ const IngressoReady: React.FC<Props> = ({ tkt }) => {
   }
 
   const downloadAsImage = () => {
+    const uniqueCode =
+      Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+
     const element = document.getElementById(tkt.id ? tkt.id : "");
     if (element) {
-      html2canvas(element).then(function (canvas) {
-        const myImage = canvas.toDataURL();
-        downloadURI(myImage, "ENTRADA_MEU_INGRESSO.png");
-      });
+      html2canvas(element)
+        .then(function (canvas) {
+          const myImage = canvas.toDataURL();
+          downloadURI(myImage, `ENTRADA_MEU_INGRESSO_${uniqueCode}.png`);
+        })
+        .then(() => {
+          setLoading2(true);
+        });
     }
   };
 
@@ -124,7 +132,9 @@ const IngressoReady: React.FC<Props> = ({ tkt }) => {
   const handleClose = () => {
     setLoading(false);
   };
-
+  const handleClose2 = () => {
+    setLoading2(false);
+  };
   return (
     <Styled.Container>
       {loading && (
@@ -132,7 +142,12 @@ const IngressoReady: React.FC<Props> = ({ tkt }) => {
           <Styled.H1modal>Aguarde o processamento do ingresso!</Styled.H1modal>
         </Modal>
       )}
-
+      {loading2 && (
+        <Modal title={"Sucesso!"} handleClose={handleClose2}>
+          <Styled.H1modal>Verifique a pasta downloads!</Styled.H1modal>
+          <span></span>
+        </Modal>
+      )}
       <Styled.BtnsContainer>
         <ButtonPrimary
           bgColor={theme.colors.green.normal}
@@ -141,13 +156,13 @@ const IngressoReady: React.FC<Props> = ({ tkt }) => {
             downloadAsImage();
           }}
         />
-        <ButtonPrimary
+        {/* <ButtonPrimary
           bgColor={theme.colors.green.normal}
           label={"enviar ingresso via WhatsApp"}
           action={() => {
             send2Wpp();
           }}
-        />
+        /> */}
       </Styled.BtnsContainer>
 
       <Styled.MainContainer

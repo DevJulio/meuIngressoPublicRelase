@@ -66,7 +66,12 @@ const CreateEvent: React.FC = () => {
   const checkPrices = () => {
     let ret = true;
     prices.forEach((element) => {
-      if (!element.description || !element.title || !element.price) {
+      if (
+        !element.description ||
+        !element.title ||
+        !element.price ||
+        !element.ticketDate
+      ) {
         ret = false;
       }
     });

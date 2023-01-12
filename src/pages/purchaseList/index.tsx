@@ -51,7 +51,7 @@ const PurchaseList: React.FC = () => {
       const eventIdData = localStorage.getItem("eventIdData");
 
       try {
-        const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
+        const tokenObj = localStorage.getItem("@AuthFirebase:accessToken");
         api.defaults.headers["Authorization"] = `${tokenObj}`;
         const response = await api.get(`/getAllMySales/${eventIdData}`);
         if (response.status === 200) {
@@ -60,18 +60,23 @@ const PurchaseList: React.FC = () => {
               return sale;
             }
           });
- 
-          setSales(localSales);
-          let allTkTtypes: string[] = [];
-          localSales.forEach((sale: TPurchase) => {
-            allTkTtypes.push(sale.tipoIngresso);
-          });
-          setTiposDeIngresso(
-            allTkTtypes.filter(
-              (item, index) => allTkTtypes.indexOf(item) === index
-            )
+          const localSalesAux = localSales.filter(
+            (val: any) => val !== undefined
           );
-          firstChild(localSales);
+
+          if (localSalesAux.length) {
+            setSales(localSalesAux);
+            let allTkTtypes: string[] = [];
+            localSalesAux.forEach((sale: TPurchase) => {
+              allTkTtypes.push(sale.tipoIngresso);
+            });
+            setTiposDeIngresso(
+              allTkTtypes.filter(
+                (item, index) => allTkTtypes.indexOf(item) === index
+              )
+            );
+            firstChild(localSalesAux);
+          }
         }
       } catch (error: any) {
         console.log(error);

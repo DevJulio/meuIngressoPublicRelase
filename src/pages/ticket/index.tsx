@@ -99,15 +99,29 @@ const TickeReady: React.FC = () => {
           <Styled.ColContainer style={{ paddingTop: "15px" }}>
             <Styled.ItemSpan>
               Clique no botão "Salvar ingresso" para baixar o ingresso no seu
-              celular
+              celular, onde será armazenado na pasta de downloads.
             </Styled.ItemSpan>
             <Styled.ItemSpan>
-              Clique no botão "Enviar ingresso via WhatsApp" para receber o
-              ingresso no número informado na compra.
+              Caso não consiga salvar o ingresso, a captura de tela também será
+              aceita.
+            </Styled.ItemSpan>
+            <Styled.ItemSpan>
+              Caso o usuário perca o ingresso ou não consiga baixar, pode ser
+              recuperado via CPF na página principal do site.
+            </Styled.ItemSpan>
+            <Styled.ItemSpan>
+              No iPhone pode ser acessado no seguinte caminho: Arquivos →
+              Dowloads → "ENTRADA_MEU_INGRESSO" OU Arquivos → Recentes →
+              "ENTRADA_MEU_INGRESSO"
+            </Styled.ItemSpan>
+            <Styled.ItemSpan>
+              No Android pode ser encontrado na galeria de imagens ou no
+              seguinte caminho: Meus Arquivos (ou algum gerenciador de Arquivos)
+              → Dowloads → "ENTRADA_MEU_INGRESSO".
             </Styled.ItemSpan>
             <Styled.ItemSpan>
               É necessário apresentar o ingresso na entrada com QR code nítido e
-              legível
+              legível.
             </Styled.ItemSpan>
             <Styled.ItemSpan>
               Ingresso pode ser impresso, ou apresentado no celular em forma de

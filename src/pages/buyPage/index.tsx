@@ -124,9 +124,12 @@ const Buy: React.FC = () => {
           })
         ).then(async () => {
           try {
-            const tktPrice = localAuth.cart.finalPrice;
-            console.log(tktPrice);
-            const response = await api.post("/createPayment", {tktPrice});
+            const tktPriceDefault = localAuth.cart.finalPrice;
+            const tktPrice = Number(tktPriceDefault) * 100;
+
+            const response = await api.post("/createPayment", {
+              tktPrice,
+            });
             if (response.data.status) {
               sessionStorage.setItem("@AuthFirebase:uniqueCodeStatus", "true");
               window.location = response.data.url;
@@ -214,6 +217,13 @@ const Buy: React.FC = () => {
             <Styled.Container>
               <Styled.MainContainer id="compradoLbl">
                 <Styled.Title>Informações do comprador</Styled.Title>
+                {ticket.length >= 1 && (
+                  <>
+                    <Styled.ItemSpan style={{ marginLeft: "5vw" }}>
+                      Informe os dados individuais para cada ingresso.
+                    </Styled.ItemSpan>
+                  </>
+                )}
               </Styled.MainContainer>
               {ticket.map((value, index) => (
                 <>

@@ -63,7 +63,7 @@ const Header: React.FC = () => {
                 style={{ color: theme.colors.red.normal }}
                 href="/adm/login"
               >
-                Acessar Meu Ingresso
+                Administrativo
               </Styled.MenuItem>
             </Menu>
           </Styled.MenuContainer>
@@ -82,7 +82,7 @@ const Header: React.FC = () => {
                 color: theme.colors.red.normal,
               }}
             >
-              Acessar Meu Ingresso
+              Administrativo
             </Styled.MenuDesktopAnchor>
           </Styled.MenuDesktopContainer>
         </Styled.MainContainer>

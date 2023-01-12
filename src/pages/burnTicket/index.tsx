@@ -24,13 +24,16 @@ const Burn: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
-        api.defaults.headers["Authorization"] = `${tokenObj}`;
-        const response = await api.get(`/getTicketToBurn/${tktId}`);
-        if (response.status === 200) {
-          await confirmarEntrada(response.data);
+        const tokenObj = localStorage.getItem("@AuthFirebase:accessToken");
+        if (tokenObj) {
+          api.defaults.headers["Authorization"] = `${tokenObj}`;
+          const response = await api.get(`/getTicketToBurn/${tktId}`);
+          if (response.status === 200) {
+            await confirmarEntrada(response.data);
+          }
         }
       } catch (error: any) {
+        console.log(error);
         if (error.response.status === 401) {
           message.error("Sessão expirada, faça login novamente!");
           setTimeout(() => {
@@ -49,16 +52,12 @@ const Burn: React.FC = () => {
     const tktDate = new Date(data.ticketDate);
     let tktDatePlusFive = new Date(tktDate);
     tktDatePlusFive.setHours(tktDate.getHours() + 5);
-
     if (data) {
       if (!data.isValid) {
         setModal3(true);
         return;
       } else {
-        if (data.isUsed && data.isComplete) {
-          setModal(true);
-        }
-        if (!data.isUsed && !data.isComplete) {
+        if (!data.isUsed) {
           const tktDay = tktDate.getDate();
           if (data.isComplete) {
             const tktRes = await updateTkt();
@@ -91,10 +90,7 @@ const Burn: React.FC = () => {
             }
           }
         } else {
-          if (data.isUsed && data.isComplete) {
-          } else {
-            setModal3(true);
-          }
+          setModal3(true);
         }
       }
     }
@@ -102,7 +98,7 @@ const Burn: React.FC = () => {
 
   const updateTkt = async () => {
     try {
-      const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
+      const tokenObj = localStorage.getItem("@AuthFirebase:accessToken");
       api.defaults.headers["Authorization"] = `${tokenObj}`;
       const response = await api.put(`/updateTicket/${tktId}`);
       if (response.status === 200) {
@@ -151,7 +147,7 @@ const Burn: React.FC = () => {
       {modal3 && (
         <>
           <Modal title={"Atenção!"} handleClose={handleClose3}>
-            <Styled.H1modal2>Ingresso antigo ou já usado!</Styled.H1modal2>
+            <Styled.H1modal2>Ingresso antigo ou já utilizado!</Styled.H1modal2>
           </Modal>
         </>
       )}

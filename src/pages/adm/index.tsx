@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import Header from "../../components/header";
 import { theme } from "../../theme/theme";
 
@@ -8,24 +8,23 @@ import BorderPage from "../../components/borderPage";
 import ButtonPrimary from "../../components/btn";
 import { useNavigate } from "react-router-dom";
 import TokenValidate from "../../components/validateToken";
-import { AuthContext } from "../../contexts/auth";
 import api from "../../services/api";
 import { message } from "antd";
+import { getStorage } from "../../utils/storage";
 
 const Adm: React.FC = () => {
   const navigate = useNavigate();
-  const localAuth: any = useContext(AuthContext);
-  const userEmail = localAuth && localAuth.user ? localAuth.user.email : false;
+  const user = getStorage("@AuthFirebase:user");
 
   useEffect(() => {
-    if (!userEmail) {
+    if (!user.email) {
       navigate("/adm/login");
     }
     const fetchData = async () => {
       try {
-        const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
+        const tokenObj = localStorage.getItem("@AuthFirebase:accessToken");
         api.defaults.headers["Authorization"] = `${tokenObj}`;
-        const response = await api.get(`/getAdmAuth/${userEmail}`);
+        const response = await api.get(`/getAdmAuth/${user.email}`);
         if (response.status === 200) {
           if (!response.data) {
             navigate("/adm/login");
@@ -60,7 +59,7 @@ const Adm: React.FC = () => {
                   <Styled.Container>
                     <Styled.TitleContainer>
                       <Styled.Title>logado como:</Styled.Title>
-                      <Styled.Title>{userEmail}</Styled.Title>
+                      <Styled.Title>{user.email}</Styled.Title>
                     </Styled.TitleContainer>
                     <Styled.BtnsContainer>
                       <ButtonPrimary
@@ -98,6 +97,16 @@ const Adm: React.FC = () => {
                         }}
                       />
                     </Styled.BtnsContainer>
+                  </Styled.Container>
+                </>
+              }
+              deskTopChildren={
+                <>
+                  <Styled.Container>
+                    <Styled.TitleContainer>
+                      <Styled.Title>logado como:</Styled.Title>
+                      <Styled.Title>{user.email}</Styled.Title>
+                    </Styled.TitleContainer>
                   </Styled.Container>
                 </>
               }

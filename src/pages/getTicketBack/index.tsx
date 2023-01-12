@@ -47,7 +47,7 @@ const GetTicket: React.FC = () => {
         <Styled.Title>
           Informe seu cpf para ter acesso ao seu ingresso!
         </Styled.Title>
-        <div id="cpfFields">
+        <Styled.CointainerAux id="cpfFields">
           <Styled.FormContainer>
             <InputMasked
               setValue={setCpf}
@@ -63,7 +63,7 @@ const GetTicket: React.FC = () => {
               color={theme.colors.green.normal}
             />
           </Styled.FormContainer>
-        </div>
+        </Styled.CointainerAux>
         <Styled.FormContainer>{createTicket()}</Styled.FormContainer>
       </Styled.Cointainer>
 

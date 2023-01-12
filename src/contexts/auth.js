@@ -1,6 +1,7 @@
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { app } from "../services/firebaseConfig";
+import { setStorage } from "../utils/storage";
 
 export const AuthContext = createContext({});
 
@@ -16,6 +17,7 @@ export const SingInProvider = ({ children }) => {
       const storageToken = sessionStorage.getItem("@AuthFirebase:token");
       if (storageToken && storageUser) {
         setUser(storageUser);
+        setStorage("@AuthFirebase:user", storageUser);
       }
     };
     loadStorageData();
@@ -28,6 +30,8 @@ export const SingInProvider = ({ children }) => {
         const userLocal = userCredential.user;
         setUser(userLocal);
         const token = userLocal.accessToken;
+        localStorage.setItem("@AuthFirebase:accessToken", token);
+        setStorage("@AuthFirebase:user", userLocal);
         sessionStorage.setItem("@AuthFirebase:accessToken", token);
         sessionStorage.setItem("@AuthFirebase:user", JSON.stringify(userLocal));
         retorno = true;

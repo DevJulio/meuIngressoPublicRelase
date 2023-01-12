@@ -168,6 +168,7 @@ const Home: React.FC = () => {
         <Styled.Title
           style={{
             fontFamily: theme.fonts.secundary,
+            color: "#fff"
           }}
         >
           Versão para dispositivos móveis completa. Acesse pelo seu celular!

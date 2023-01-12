@@ -9,6 +9,7 @@ interface IUsers {
 
 const Purchase: React.FC<IUsers> = ({ data }) => {
   const buyTime = new Date(data.createdAt);
+
   return (
     <>
       <Styled.Container>

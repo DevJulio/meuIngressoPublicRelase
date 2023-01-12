@@ -18,8 +18,8 @@ export const FormCointainer = styled.form`
   height: 100vh;
   width: 100%;
   position: fixed;
-  padding-top: 18vh;
-  @media ${({ theme }) => theme.devices.tablet} {
+  padding-top: 0vh;
+   @media ${({ theme }) => theme.devices.tablet} {
   }
 `;
 export const Input = styled.input`

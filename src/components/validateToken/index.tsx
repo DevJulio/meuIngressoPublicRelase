@@ -1,6 +1,7 @@
 import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../contexts/auth";
+// import { AuthContext } from "../../contexts/auth";
+import { getStorage } from "../../utils/storage";
 
 interface Props {
   children: ReactElement;
@@ -9,10 +10,11 @@ interface Props {
 const TokenValidate: React.FC<Props> = ({ children }) => {
   const navigate = useNavigate();
   const [able, setAble] = useState<boolean>(false);
-  const localAuth: any = useContext(AuthContext);
+  // const localAuth: any = useContext(AuthContext);
+  const user = getStorage("@AuthFirebase:user");
 
   useEffect(() => {
-    if (!localAuth.signed) {
+    if (!user) {
       navigate("/");
       return;
     } else {

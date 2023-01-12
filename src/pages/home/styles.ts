@@ -14,6 +14,13 @@ export const DesktopContainer = styled.div`
 display: flex;
 flex-direction: column;
 width: 100%;
+    background-color: #fb8500;
+    padding-top: 18vh;
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 32vh;
+    color: ${({ theme }) => theme.colors.white.normal};
+
 @media ${({ theme }) => theme.devices.tablet} {
   display: none;
   }
