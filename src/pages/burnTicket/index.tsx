@@ -16,11 +16,13 @@ const Burn: React.FC = () => {
   const [modal2, setModal2] = useState<boolean>(false);
   const [modal3, setModal3] = useState<boolean>(false);
   const [modal4, setModal4] = useState<boolean>(false);
+  const [modal5, setModal5] = useState<boolean>(false);
 
   const { search } = useLocation();
   const navigate = useNavigate();
   const searchParms = new URLSearchParams(search);
   const tktId = searchParms.get("id");
+  //TODO: VERIFICAR A QUEIMA CASO O INGRESSO NÃO EXISTA NA TABELA DE INGRESSOS, VER NA DE VENDAS.
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -40,7 +42,9 @@ const Burn: React.FC = () => {
             navigate("/adm/login");
           }, 4000);
         }
-        message.error("Verifique os dados e tente novamente!");
+        //Verificar se existe na tabela de vendas. ou criar ingresso
+        message.error("Verifique os dados do email e tente novamente!");
+        setModal5(true);
       }
     };
     fetchData();
@@ -128,6 +132,9 @@ const Burn: React.FC = () => {
   const handleClose4 = () => {
     setModal4(false);
   };
+  const handleClose5 = () => {
+    setModal5(false);
+  };
   return (
     <>
       {modal && (
@@ -155,6 +162,15 @@ const Burn: React.FC = () => {
         <>
           <Modal title={"Atenção!"} handleClose={handleClose4}>
             <Styled.H1modal2>Ingresso para evento futuro!</Styled.H1modal2>
+          </Modal>
+        </>
+      )}
+      {modal5 && (
+        <>
+          <Modal title={"Atenção!"} handleClose={handleClose5}>
+            <Styled.H1modal2>
+              VERIFIQUE O EMAIL DA COMPRA DO INGRESSO JUNTO A STRIPE!
+            </Styled.H1modal2>
           </Modal>
         </>
       )}

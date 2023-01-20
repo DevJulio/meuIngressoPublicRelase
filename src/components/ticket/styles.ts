@@ -5,8 +5,11 @@ export const SpanAndIcon = styled.div`
   flex-direction: column;
   padding-top: 2vh;
   padding-bottom: 1vh;
-  min-width: 100vw;
-  max-width: 100vw;
+  width: 100%;
+  @media ${({ theme }) => theme.devices.tablet} {
+    min-width: 100vw;
+    max-width: 100vw;
+  }
 `;
 export const Container = styled.div`
   display: flex;
@@ -66,12 +69,12 @@ export const Banner = styled.img`
 export const Spacer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 11vw;
-  height: 5vh;
+  width: 3vw;
+  height: 4vh;
   border-radius: 25px;
   position: absolute;
   place-self: end;
-  margin-right: 8vw;
+  margin-right: 2vw;
   margin-top: 2vh;
   align-items: center;
   font-size: ${({ theme }) => theme.fontSize.sm};
@@ -81,16 +84,21 @@ export const Spacer = styled.div`
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  @media ${({ theme }) => theme.devices.tablet} {
+    margin-right: 8vw;
+    margin-top: 2vh;
+    width: 11vw;
+  }
 `;
 export const SpacerCategory = styled.div`
   display: flex;
   flex-direction: column;
-  width: 19vw;
+  width: 5vw;
   height: 3vh;
   border-radius: 25px;
   position: absolute;
   place-self: flex-start;
-  margin-left: 11vw;
+  margin-left: 3vw;
   margin-top: 2vh;
   align-items: center;
   font-size: ${({ theme }) => theme.fontSize.sm};
@@ -100,6 +108,10 @@ export const SpacerCategory = styled.div`
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  @media ${({ theme }) => theme.devices.tablet} {
+    margin-left: 11vw;
+    width: 19vw;
+  }
 `;
 export const ContainerRow = styled.div`
   display: flex;
@@ -110,6 +122,7 @@ export const ContainerRow = styled.div`
 export const ContainerCol = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 export const PriceSpan = styled.span`
@@ -140,8 +153,11 @@ export const EvntTitleAux = styled.span`
   font-family: ${({ theme }) => theme.fonts.primary};
   font-size: ${({ theme }) => theme.fontSize.md};
   position: absolute;
-  margin-left: 46vw;
+  margin-left: 16vw;
   margin-top: -4vh;
+  @media ${({ theme }) => theme.devices.tablet} {
+    margin-left: 46vw;
+  }
 `;
 
 export const EvntTime = styled.span`
@@ -150,8 +166,12 @@ export const EvntTime = styled.span`
   font-size: ${({ theme }) => theme.fontSize.md2};
   position: absolute;
   place-self: center;
-  margin-left: 69.5vw;
-  margin-top: 6px;
+  margin-left: 0vw;
+  margin-top: 37px;
+  @media ${({ theme }) => theme.devices.tablet} {
+    margin-left: 69.5vw;
+    margin-top: 6px;
+  }
 `;
 
 export const BtnContainer = styled.div`

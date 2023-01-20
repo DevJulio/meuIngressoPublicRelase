@@ -73,3 +73,10 @@ color:${({ theme }) => theme.colors.blue.palete};
 font-family: ${({ theme }) => theme.fonts.primary};
 padding: 7px;
 `
+export const RowContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+      align-items: center;
+    place-content: center;
+    padding: 2vh;
+`;

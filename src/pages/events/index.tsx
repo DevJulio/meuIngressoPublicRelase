@@ -121,6 +121,29 @@ const Events: React.FC = () => {
                   )}
                 </>
               }
+              deskTopChildren={
+                <>
+                  {eventsToBeRender.length ? (
+                    <Styled.RowContainer>
+                      {eventsToBeRender.map((event) => (
+                        <Ticket data={event} isAdm />
+                      ))}
+                    </Styled.RowContainer>
+                  ) : (
+                    <></>
+                  )}
+                  {eventsToBeRender.length === 0 && (
+                    <Styled.Title
+                      style={{
+                        marginTop: "3vh",
+                        color: theme.colors.white.normal,
+                      }}
+                    >
+                      Sem eventos!
+                    </Styled.Title>
+                  )}
+                </>
+              }
             />
           </>
         }

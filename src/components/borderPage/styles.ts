@@ -5,7 +5,7 @@ export const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.blue.palete};
+  // background-color: ${({ theme }) => theme.colors.blue.palete};
   padding-top: 5vh;
   width: 100%;
 `;
@@ -14,7 +14,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.yellow.palete};
+  // background-color: ${({ theme }) => theme.colors.yellow.palete};
   width: 100%;
   border-top-left-radius: 15vw;
   border-top-right-radius: 15vw;

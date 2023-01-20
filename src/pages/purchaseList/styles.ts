@@ -8,6 +8,8 @@ export const SelectContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+
+
 `
 
 export const Select = styled.select`
@@ -19,6 +21,9 @@ font-size: ${({ theme }) => theme.fontSize.md2};
 color:${({ theme }) => theme.colors.blue.palete};
 font-family: ${({ theme }) => theme.fonts.primary};
 padding: 7px;
+@media ${({ theme }) => theme.devices.tablet} {
+  width: 69vw;    
+}
 `
 export const LogoImg = styled.img`
   width: 40px;

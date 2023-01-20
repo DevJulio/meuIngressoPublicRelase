@@ -9,14 +9,14 @@ export const Container = styled.div`
   display: flex;
   width: fit-content;
   background-position: center;
-  background-color: ${({ theme }) => theme.colors.white.normal};
+  background-color: ${({ theme }) => theme.colors.orange.palete};
   width: 86%;
   flex-direction: column;
    align-self: center;
   padding: 1vh;
   justify-content: center;
   border-radius: 25px;
-  background: rgba(255, 255, 255, 0.51);
+  // background: rgba(255, 255, 255, 0.51);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);

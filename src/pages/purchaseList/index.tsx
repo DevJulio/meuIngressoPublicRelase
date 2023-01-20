@@ -42,6 +42,7 @@ const PurchaseList: React.FC = () => {
   const [qty, setQty] = useState<number>(0);
   const [accessqty, setAccessQty] = useState<number>(0);
   const [sales, setSales] = useState<TPurchase[]>([]);
+  const [salesToBeRender, setSalesToBeRender] = useState<TPurchase[]>([]);
   const [tiposDeIngresso, setTiposDeIngresso] = useState<any[]>([]);
 
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ const PurchaseList: React.FC = () => {
 
           if (localSalesAux.length) {
             setSales(localSalesAux);
+            setSalesToBeRender(localSalesAux);
             let allTkTtypes: string[] = [];
             localSalesAux.forEach((sale: TPurchase) => {
               allTkTtypes.push(sale.tipoIngresso);
@@ -121,8 +123,10 @@ const PurchaseList: React.FC = () => {
       let count = 0;
       let accessCount = 0;
       let price = 0;
+      let localSale: TPurchase[] = [];
       sales.map((purchase: TPurchase) => {
         if (purchase.tipoIngresso === type) {
+          localSale.push(purchase);
           price = price + purchase.valorPago;
           purchase.ticket.forEach((sale: TSaleArr) => {
             count++;
@@ -135,6 +139,7 @@ const PurchaseList: React.FC = () => {
       setQty(count);
       setAccessQty(accessCount);
       setMoney(price);
+      setSalesToBeRender(localSale);
     } else {
       firstChild(sales);
     }
@@ -176,8 +181,8 @@ const PurchaseList: React.FC = () => {
             </Styled.SelectContainer>
             {money > 0 && sales && (
               <Styled.InfoContainer>
-                <Styled.Info>Valor arrecadado com: {title}</Styled.Info>
-                <Styled.Info>R$ {money}</Styled.Info>
+                <Styled.Info>Informações sobre: {title}</Styled.Info>
+                {/* <Styled.Info>R$ {money}</Styled.Info> */}
                 <Styled.Info>Quantidade vendida: {qty}</Styled.Info>
                 <Styled.Info>Ingressos usados: {accessqty}</Styled.Info>
               </Styled.InfoContainer>
@@ -188,9 +193,26 @@ const PurchaseList: React.FC = () => {
               outsideColor={theme.colors.white.normal}
               children={
                 <>
-                  {sales.length ? (
+                  {salesToBeRender.length ? (
                     <>
-                      {sales.map((sale: TPurchase) => (
+                      {salesToBeRender.map((sale: TPurchase) => (
+                        <Purchase data={sale} />
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <Styled.NoData>
+                        <Styled.Title>Sem vendas!</Styled.Title>
+                      </Styled.NoData>
+                    </>
+                  )}
+                </>
+              }
+              deskTopChildren={
+                <>
+                  {salesToBeRender.length ? (
+                    <>
+                      {salesToBeRender.map((sale: TPurchase) => (
                         <Purchase data={sale} />
                       ))}
                     </>

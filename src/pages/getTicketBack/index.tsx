@@ -33,8 +33,8 @@ const GetTicket: React.FC = () => {
 
   const createTicket = () => {
     if (ticket) {
-      return ticket.map((tkt) => {
-        return <IngressoReady tkt={tkt} />;
+      return ticket.map((tkt, index) => {
+        return <IngressoReady key={index} tkt={tkt} />;
       });
     }
   };

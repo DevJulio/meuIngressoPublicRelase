@@ -11,6 +11,11 @@ import TokenValidate from "../../components/validateToken";
 import api from "../../services/api";
 import { message } from "antd";
 import { getStorage } from "../../utils/storage";
+import cadastrarEvento from "../../assets/icons/cadastrarEvento.png";
+import meusEventos from "../../assets/icons/meusEventos.png";
+import vendas from "../../assets/icons/vendas.png";
+import invalidar from "../../assets/icons/invalidar.png";
+import lista from "../../assets/icons/lista.png";
 
 const Adm: React.FC = () => {
   const navigate = useNavigate();
@@ -102,11 +107,55 @@ const Adm: React.FC = () => {
               }
               deskTopChildren={
                 <>
-                  <Styled.Container>
+                  <Styled.Container style={{ backgroundColor: "white" }}>
                     <Styled.TitleContainer>
                       <Styled.Title>logado como:</Styled.Title>
                       <Styled.Title>{user.email}</Styled.Title>
                     </Styled.TitleContainer>
+                    <Styled.ContainerAux style={{ backgroundColor: "white" }}>
+                      <Styled.RowContainer>
+                        <Styled.IconContainer
+                          onClick={() => {
+                            navigate("/adm/criar-evento");
+                          }}
+                        >
+                          <Styled.Icon src={cadastrarEvento} />
+                          <Styled.IconSpan>Cadastrar Evento</Styled.IconSpan>
+                        </Styled.IconContainer>
+
+                        <Styled.IconContainer
+                          onClick={() => {
+                            navigate("/adm/lista-de-eventos");
+                          }}
+                        >
+                          <Styled.Icon src={meusEventos} />
+                          <Styled.IconSpan>Meus eventos</Styled.IconSpan>
+                        </Styled.IconContainer>
+
+                        <Styled.IconContainer
+                          onClick={() => {
+                            navigate("/adm/seleciona-evento");
+                          }}
+                        >
+                          <Styled.Icon src={vendas} />
+                          <Styled.IconSpan>Lista de vendas</Styled.IconSpan>
+                        </Styled.IconContainer>
+                      </Styled.RowContainer>
+                      <Styled.RowContainer>
+                        <Styled.IconContainer
+                          onClick={() => {
+                            navigate("/");
+                          }}
+                        >
+                          <Styled.Icon src={lista} />
+                          <Styled.IconSpan>Lista de eventos</Styled.IconSpan>
+                        </Styled.IconContainer>
+                        <Styled.IconContainer>
+                          <Styled.Icon src={invalidar} />
+                          <Styled.IconSpan>Invalidar Ingresso</Styled.IconSpan>
+                        </Styled.IconContainer>
+                      </Styled.RowContainer>
+                    </Styled.ContainerAux>
                   </Styled.Container>
                 </>
               }

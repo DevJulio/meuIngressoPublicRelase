@@ -15,6 +15,10 @@ import { TCardProps } from "../../components/ticket/card";
 import api from "../../services/api";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from "react-responsive-carousel";
+import ingresso from "../../assets/banner/ingresso.png";
+import menu from "../../assets/banner/menu.png";
 
 type TCoords = {
   latitude: number;
@@ -31,24 +35,25 @@ const Home: React.FC = () => {
   const [city, setCity] = useState("Iporá, Goiás, Brasil.");
   const [allEvents, setAllEvents] = useState<TCardProps[]>([]);
   const [eventsToBeRender, setEventsToBeRender] = useState<TCardProps[]>([]);
+  const width = window.screen.width;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
-        api.defaults.headers["Authorization"] = `${tokenObj}`;
+        // console.log("Opa");
+        // const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
+        // api.defaults.headers["Authorization"] = `${tokenObj}`;
         const response = await api.get("/getAllEvents");
+        // console.log(response);
         if (response.status === 200) {
-          if (response.status === 200) {
-            const parsed = response.data.map((event: any) => {
-              return {
-                id: event.id,
-                ...event.data,
-              };
-            });
-            setAllEvents(parsed as TCardProps[]);
-            setEventsToBeRender(parsed as TCardProps[]);
-          }
+          const parsed = response.data.map((event: any) => {
+            return {
+              id: event.id,
+              ...event.data,
+            };
+          });
+          setAllEvents(parsed as TCardProps[]);
+          setEventsToBeRender(parsed as TCardProps[]);
         }
       } catch (error: any) {
         if (error.response.status === 401) {
@@ -102,7 +107,17 @@ const Home: React.FC = () => {
     });
     setEventsToBeRender(events);
   };
-
+  const redirect = (id: number) => {
+    if (id === 0) {
+      navigate("/contato");
+    }
+    if (id === 1) {
+      window.location.href =
+        "https://meu-menu-public-relase-i9exk3suu-devjulio.vercel.app/";
+    }
+    if (id === 2) {
+    }
+  };
   return (
     <>
       <Header />
@@ -143,19 +158,62 @@ const Home: React.FC = () => {
           children={
             <>
               {eventsToBeRender.length ? (
-                eventsToBeRender.map((event) => <Ticket data={event} />)
+                <>
+                  <Styled.CarouselContainer>
+                    <Carousel
+                      width={width - 50}
+                      autoPlay={true}
+                      infiniteLoop={true}
+                      showArrows={true}
+                      onClickItem={(id) => {
+                        redirect(id);
+                      }}
+                    >
+                      <Styled.BannerCarousel src={ingresso} />
+                      <Styled.BannerCarousel src={menu} />
+                    </Carousel>
+                  </Styled.CarouselContainer>
+
+                  {eventsToBeRender.map((event) => (
+                    <Ticket data={event} />
+                  ))}
+                  <Styled.Ad>
+                    <script
+                      async
+                      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1550305810177059"
+                      crossOrigin="anonymous"
+                    ></script>
+                  </Styled.Ad>
+                </>
               ) : (
                 <></>
               )}
               {eventsToBeRender.length === 0 && (
-                <Styled.Title
-                  style={{
-                    marginTop: "3vh",
-                    color: theme.colors.white.normal,
-                  }}
-                >
-                  Sem eventos!
-                </Styled.Title>
+                <>
+                  <Styled.Title
+                    style={{
+                      marginTop: "3vh",
+                      color: theme.colors.white.normal,
+                    }}
+                  >
+                    Aviso!
+                  </Styled.Title>
+                  <span>
+                    Devido a alta demanda, os servidores não estão suportando a
+                    carga. Acesse por uma guia anônima ou tente novamente mais
+                    tarde!
+                  </span>
+                  <span>
+                    Passo 1. Abra o Chrome e toque sobre o botão localizado no
+                    canto superior direito da página. No menu do navegador,
+                    toque em “Nova guia anônima”. O procedimento é o mesmo tanto
+                    no iOS quanto no Android;
+                  </span>
+                  <span>para iPhone (safari):</span>
+                  <a href="https://support.apple.com/pt-br/HT203036">
+                    clique aqui
+                  </a>
+                </>
               )}
             </>
           }
@@ -168,7 +226,7 @@ const Home: React.FC = () => {
         <Styled.Title
           style={{
             fontFamily: theme.fonts.secundary,
-            color: "#fff"
+            color: "#fff",
           }}
         >
           Versão para dispositivos móveis completa. Acesse pelo seu celular!

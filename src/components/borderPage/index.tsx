@@ -21,7 +21,7 @@ const BorderPage: React.FC<IBorderProps> = ({
           {children}
         </Styled.ContainerMobile>
         {deskTopChildren && (
-          <Styled.Container>{deskTopChildren}</Styled.Container>
+          <Styled.Container style={{display: "flex"}}>{deskTopChildren}</Styled.Container>
         )}
       </Styled.MainContainer>
     </>

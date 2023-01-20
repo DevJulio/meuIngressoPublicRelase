@@ -99,3 +99,18 @@ color:${({ theme }) => theme.colors.blue.palete};
 font-family: ${({ theme }) => theme.fonts.primary};
 padding: 7px;
 `
+export const BannerCarousel = styled.img`
+border-radius: 25px;
+`;
+export const CarouselContainer = styled.div`
+margin-top: 3vh;
+height: 20vh;
+margin-bottom: 2vh;
+`
+export const Ad = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 2vh;
+  margin-right: auto;
+  flex-direction: row;
+`;

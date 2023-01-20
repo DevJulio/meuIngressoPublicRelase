@@ -244,3 +244,13 @@ export const Title = styled.span`
     width: 100%;
   }
 `;
+export const Arrow = styled.div`
+  color: white;
+  display: flex;
+  flex-direction: row;
+  place-self: end;
+  margin-right: 1vw;
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  margin-bottom: 1vh;
+`;

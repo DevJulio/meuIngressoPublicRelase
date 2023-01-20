@@ -155,7 +155,7 @@ export const ItemSpan = styled.span`
   padding-inline: 2px;
 `;
 export const CardDiv = styled.div`
-  display: flex;
+  display: none;
   flex-direction: row;
   width: 100%;
   place-content: center;

@@ -56,6 +56,7 @@ const Detail: React.FC = () => {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const formatedTime =
@@ -107,6 +108,45 @@ const Detail: React.FC = () => {
   };
   const expireDayVar = expireDay();
 
+  const buy = async (payload: any) => {
+    const myDiv = document.getElementById("containerr");
+    if (myDiv) {
+      myDiv.style.display = "none";
+    }
+    try {
+      const tktPriceDefault = payload.finalPrice;
+      const tktPrice = Number(tktPriceDefault) * 100;
+      const tktType = payload.ticket
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+      const tktQty = payload.qtd;
+      const tktDate = payload.ticketDate;
+      const tktComplete = payload.isComplete;
+      const tktName = payload.ticketName
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+      const eventId = payload.eventId;
+
+      const response = await api.post("/createPayment", {
+        tktPrice,
+        tktType,
+        tktQty,
+        tktDate,
+        tktComplete,
+        tktName,
+        eventId,
+      });
+      if (response.data.status) {
+        localStorage.setItem("@AuthFirebase:uniqueCodeStatus", "true");
+        window.location = response.data.url;
+      }
+    } catch (error: any) {
+      console.log(error);
+      message.error("Verifique os dados e tente novamente!");
+      return false;
+    }
+  };
+
   return (
     <>
       {modal && event && (
@@ -137,7 +177,7 @@ const Detail: React.FC = () => {
                 label={"Continuar"}
                 action={() => {
                   handleClose();
-                  localAuth.addCart({
+                  const payload = {
                     ticket: event.prices[ticketIndex].title,
                     qtd: count,
                     finalPrice: count * event.prices[ticketIndex].price,
@@ -147,8 +187,11 @@ const Detail: React.FC = () => {
                     ticketColor: event.ticketColor,
                     title: event.title,
                     ticketName: event.prices[ticketIndex].title,
-                  });
-                  navigate("/compra");
+                  };
+                  localAuth.addCart(payload);
+                  //TODO: DESCOMENTAR
+                  // navigate("/compra");
+                  buy(payload);
                 }}
               />
               <ButtonPrimary
@@ -207,7 +250,7 @@ const Detail: React.FC = () => {
       )}
       <Header />
 
-      <Styled.MainContainer>
+      <Styled.MainContainer id="containerr">
         <BorderPage
           insideColor={theme.colors.orange.palete}
           outsideColor={theme.colors.orange.palete}
@@ -231,7 +274,6 @@ const Detail: React.FC = () => {
                     <Styled.PriceSpanAux>A partir de:</Styled.PriceSpanAux>
                     <Styled.PriceSpan>R${event.price}</Styled.PriceSpan>
                   </Styled.ContainerData>
-
                   <Styled.InfoContainerRow>
                     <Styled.TitleAndLogo>
                       <Styled.LogoImg src={calendario} />
@@ -289,7 +331,6 @@ const Detail: React.FC = () => {
                     </Styled.SpanDescription>
                   </Styled.Description>
                   <Styled.SpanTitle>Ingressos disponíveis:</Styled.SpanTitle>
-
                   <Styled.TicketsContainer>
                     {event.prices.map((item: any, id) => (
                       <Styled.Tickets
@@ -305,6 +346,11 @@ const Detail: React.FC = () => {
                       </Styled.Tickets>
                     ))}
                   </Styled.TicketsContainer>
+                  {event.prices.length >= 3 && (
+                    <>
+                      <Styled.Arrow>Veja os outros ingressos! ➜</Styled.Arrow>
+                    </>
+                  )}
                 </Styled.Container>
               )}
             </>

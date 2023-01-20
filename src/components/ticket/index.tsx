@@ -131,105 +131,108 @@ const Ticket: React.FC<ITicket> = ({ data, isAdm = false, isInfo = false }) => {
           </Modal>
         </>
       )}
-      <Styled.SpanAndIcon
-        onClick={() => {
-          localStorage.setItem("eventId", data.id);
-          if (!isAdm && !isInfo) {
-            navigate("/detalhes");
-          }
-        }}
-      >
-        <Styled.Spacer>
-          <span
-            style={{
-              paddingTop: "2px",
-            }}
-          >
-            {data.day}
-          </span>
-          <span>{data.month}</span>
-        </Styled.Spacer>
-        <Styled.SpacerCategory>
-          <span
-            style={{
-              paddingTop: "5px",
-            }}
-          >
-            {data.category}
-          </span>
-        </Styled.SpacerCategory>
-        <Styled.Banner src={data.pictureUrl} />
-        <Styled.Container>
-          <Styled.EvntTitle>{data.title}</Styled.EvntTitle>
-          <Styled.EvntTitleAux>A partir de: </Styled.EvntTitleAux>
-          <Styled.ContainerRow>
-            <span style={{ color: theme.colors.blue.palete }}>
-              {data.place}
-            </span>
+      <Styled.ContainerCol>
+        <Styled.SpanAndIcon
+          onClick={() => {
+            localStorage.setItem("eventId", data.id);
+            if (!isAdm && !isInfo) {
+              navigate("/detalhes");
+            }
+          }}
+        >
+          <Styled.Spacer>
             <span
               style={{
-                padding: "1vw",
+                paddingTop: "2px",
               }}
-            ></span>
+            >
+              {data.day}
+            </span>
+            <span>{data.month}</span>
+          </Styled.Spacer>
+          <Styled.SpacerCategory>
+            <span
+              style={{
+                paddingTop: "5px",
+              }}
+            >
+              {data.category}
+            </span>
+          </Styled.SpacerCategory>
+          <Styled.Banner src={data.pictureUrl} />
+          <Styled.Container>
+            <Styled.EvntTitle>{data.title}</Styled.EvntTitle>
+            <Styled.EvntTitleAux>A partir de: </Styled.EvntTitleAux>
+            <Styled.ContainerRow>
+              <span style={{ color: theme.colors.blue.palete }}>
+                {data.place}
+              </span>
+              <span
+                style={{
+                  padding: "1vw",
+                }}
+              ></span>
 
-            <Styled.EvntTime>{formatedData}</Styled.EvntTime>
-          </Styled.ContainerRow>
-          <Styled.PriceSpan>R${data.price}</Styled.PriceSpan>
-        </Styled.Container>
-      </Styled.SpanAndIcon>
-      {isAdm && (
-        <>
-          <Styled.BtnsContainer
-            style={{
-              backgroundColor: theme.colors.white.normal,
-              borderRadius: "25px",
-              width: "92%",
-            }}
-          >
-            <Styled.BtnContainer>
-              <ButtonPrimary
-                bgColor={theme.colors.green.normal}
-                label={"Editar"}
-                action={() => {
-                  localStorage.setItem("eventId", data.id);
-                  navigate("/adm/editar-evento");
-                }}
-              />
-            </Styled.BtnContainer>
-            {data.status === "active" && (
-              <ButtonPrimary
-                label={"Desativar evento"}
-                action={() => {
-                  setEventToBeChanged(data.id);
-                  setModal(true);
-                }}
-              />
-            )}
-            {data.status === "disabled" && (
-              <ButtonPrimary
-                bgColor={theme.colors.blue.palete}
-                label={"Ativar evento"}
-                action={() => {
-                  setEventToBeChanged(data.id);
-                  setModal(true);
-                }}
-              />
-            )}
-          </Styled.BtnsContainer>
-        </>
-      )}
-      {isInfo && (
-        <>
-          <ButtonPrimary
-            bgColor={theme.colors.blue.palete}
-            label={"Selecionar evento"}
-            action={() => {
-              localStorage.setItem("eventIdData", data.id);
-              navigate("/adm/lista-de-compras");
-            }}
-          />
-        </>
-      )}
+              <Styled.EvntTime>{formatedData}</Styled.EvntTime>
+            </Styled.ContainerRow>
+            <Styled.PriceSpan>R${data.price}</Styled.PriceSpan>
+          </Styled.Container>
+        </Styled.SpanAndIcon>
+
+        {isAdm && (
+          <>
+            <Styled.BtnsContainer
+              style={{
+                backgroundColor: theme.colors.white.normal,
+                borderRadius: "25px",
+                width: "92%",
+              }}
+            >
+              <Styled.BtnContainer>
+                <ButtonPrimary
+                  bgColor={theme.colors.green.normal}
+                  label={"Editar"}
+                  action={() => {
+                    localStorage.setItem("eventId", data.id);
+                    navigate("/adm/editar-evento");
+                  }}
+                />
+              </Styled.BtnContainer>
+              {data.status === "active" && (
+                <ButtonPrimary
+                  label={"Desativar evento"}
+                  action={() => {
+                    setEventToBeChanged(data.id);
+                    setModal(true);
+                  }}
+                />
+              )}
+              {data.status === "disabled" && (
+                <ButtonPrimary
+                  bgColor={theme.colors.blue.palete}
+                  label={"Ativar evento"}
+                  action={() => {
+                    setEventToBeChanged(data.id);
+                    setModal(true);
+                  }}
+                />
+              )}
+            </Styled.BtnsContainer>
+          </>
+        )}
+        {isInfo && (
+          <>
+            <ButtonPrimary
+              bgColor={theme.colors.blue.palete}
+              label={"Selecionar evento"}
+              action={() => {
+                localStorage.setItem("eventIdData", data.id);
+                navigate("/adm/lista-de-compras");
+              }}
+            />
+          </>
+        )}
+      </Styled.ContainerCol>
     </>
   );
 };

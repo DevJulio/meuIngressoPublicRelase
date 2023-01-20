@@ -5,12 +5,14 @@ interface IBorderProps {
   children: any;
   outsideColor: string;
   insideColor: string;
+  deskTopChildren?: any;
 }
 
 const InvertBorderPage: React.FC<IBorderProps> = ({
   children,
   outsideColor,
   insideColor,
+  deskTopChildren,
 }) => {
   return (
     <>
@@ -18,6 +20,9 @@ const InvertBorderPage: React.FC<IBorderProps> = ({
         <Styled.ContainerMobile style={{ backgroundColor: insideColor }}>
           {children}
         </Styled.ContainerMobile>
+        {deskTopChildren && (
+          <Styled.Container>{deskTopChildren}</Styled.Container>
+        )}
       </Styled.MainContainer>
     </>
   );

@@ -14,74 +14,42 @@ import ButtonPrimary from "../../components/btn";
 import { useNavigate } from "react-router-dom";
 
 const TickeReady: React.FC = () => {
+  window.scrollTo(0, 0);
   const [ticket, setTicket] = useState<TTicket[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const id = sessionStorage.getItem("@AuthFirebase:uniqueCode");
-    window.scrollTo(0, 0);
+    const id = localStorage.getItem("@AuthFirebase:uniqueCode");
+    const status = localStorage.getItem("@AuthFirebase:uniqueCodeStatus");
     const fetchData = async () => {
-      const status = sessionStorage.getItem("@AuthFirebase:uniqueCodeStatus");
-      if (status) {
+      if (status && id) {
         try {
-          const response = await api.get(`/getTicketId/${id}`);
+          const response = await api.get(`/getTicketsToSave/${id}`);
           if (response.status === 200) {
-            sessionStorage.setItem("@AuthFirebase:uniqueCodeStatus", "false");
-
-            const tktsIds = response.data;
-            await Promise.all(
-              tktsIds.map(async (id: any) => {
-                try {
-                  await api.put(`/updateTicketStatus/${id.id}`);
-                } catch (error: any) {
-                  message.error("Verifique os dados e tente novamente!");
-                  return false;
-                }
-              })
-            ).then(async () => {
-              try {
-                const response = await api.get(`/getPurchasetId/${id}`);
-                if (response.status === 200) {
-                  const purchaseId = response.data[0].id;
-                  try {
-                    const response = await api.put(
-                      `/updatePurchaseStatus/${purchaseId}`
-                    );
-                    if (response.status === 200) {
-                      try {
-                        const response = await api.get(
-                          `/getTicketsToSave/${id}`
-                        );
-                        if (response.status === 200) {
-                          setTicket(response.data);
-                        }
-                      } catch (error: any) {
-                        console.log(error);
-                        message.error("Verifique os dados e tente novamente!");
-                      }
-                    }
-                  } catch (error: any) {
-                    message.error("Verifique os dados e tente novamente!");
-                    return false;
-                  }
-                }
-              } catch (error) {
-                console.log(error);
-                message.error("Verifique os dados e tente novamente!");
-              }
-            });
+            setTicket(response.data);
+            localStorage.setItem("@AuthFirebase:uniqueCodeStatus", "false");
           }
         } catch (error: any) {
+          console.log(error);
           message.error("Verifique os dados e tente novamente!");
         }
+      } else {
+        message.error(
+          "Verifique os dados e tente novamente. ou contate o suporte na página a seguir...",
+          10
+        );
+        setTimeout(() => {
+          navigate("/contato");
+        }, 4000);
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const createTicket = () => {
-    return ticket.map((tkt) => {
-      return <IngressoReady tkt={tkt} />;
+    return ticket.map((tkt, index) => {
+      return <IngressoReady key={index} tkt={tkt} />;
     });
   };
 

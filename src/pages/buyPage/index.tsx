@@ -6,12 +6,7 @@ import Footer from "../../components/footer";
 import BorderPage from "../../components/borderPage";
 import ButtonPrimary from "../../components/btn";
 import Modal from "../../components/modal";
-import InputMasked from "../../components/maskedIpunt";
-import Input from "../../components/input";
-import Select from "../../components/select";
-import Cards from "react-credit-cards";
-import "react-credit-cards/es/styles-compiled.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/auth";
 import { message } from "antd";
 import api from "../../services/api";
@@ -20,38 +15,66 @@ import { TTicket } from "./buy";
 export type TFocus = "name" | "number" | "expiry" | "cvc";
 
 const Buy: React.FC = () => {
+  const [eventData, setEventData] = useState<any>();
+
+  const { search } = useLocation();
+  const searchParms = new URLSearchParams(search);
+  const tktInfo = searchParms.get("tktInfo");
+
+  const [ticketInfo] = useState(tktInfo ? JSON.parse(tktInfo) : {});
+
+  useEffect(() => {
+    const searchParms = new URLSearchParams(search);
+    if (!searchParms) {
+      navigate("/detalhes");
+    }
+    const tktInfo = searchParms.get("tktInfo");
+    let parsedInfo: any = {};
+    if (tktInfo) {
+      parsedInfo = JSON.parse(tktInfo);
+    }
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/getEvent/${parsedInfo.eventId}`);
+        if (response.status === 200) {
+          const event = response.data;
+          setEventData(event);
+        }
+      } catch (error: any) {
+        console.log(error);
+        message.error("Verifique os dados e tente novamente!");
+      }
+    };
+
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const localAuth: any = useContext(AuthContext);
+
   const defaultTicket: TTicket = {
     userName: "",
     userNumber: "",
     cpf: "",
-    isUsed: false,
-    ticketDate: localAuth.cart.ticketDate,
-    isComplete: localAuth.cart.isComplete,
-    eventId: localAuth.cart.eventId,
-    ticketColor: localAuth.cart.ticketColor,
-    title: localAuth.cart.title,
-    ticketName: localAuth.cart.ticketName,
     buyId: "",
+    isUsed: false,
+    ticketDate: ticketInfo.tktDate,
+    isComplete: ticketInfo.tktComplete,
+    eventId: ticketInfo.eventId,
+    ticketName: ticketInfo.tktName,
+    ticketColor: eventData ? eventData.ticketColor : "",
+    title: eventData ? eventData.title : "",
   };
 
-  const [tipo, setTipo] = useState("Crédito");
-  const [focus, setfocus] = useState<TFocus>("name");
   const [loading, setLoading] = useState<boolean>(false);
   const [loading2, setLoading2] = useState<boolean>(false);
   const [loading3, setLoading3] = useState<boolean>(false);
   const [ticket, setTicket] = useState<TTicket[]>([defaultTicket]);
+
   const uniqueCode =
     Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!localAuth.cart.qtd) {
-      navigate("/detalhes");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleFieldChange = (
     index: number,
@@ -86,32 +109,34 @@ const Buy: React.FC = () => {
   const handleClose3 = () => {
     setLoading3(false);
   };
+  const formatedData =
+    new Date().getHours().toString().padStart(2, "0") +
+    ":" +
+    new Date().getMinutes().toString().padStart(2, "0");
 
   const buy = async () => {
-    //TODO: simulando retorno da api de pagamento.
     const payload = {
-      ticket,
-      tipo,
-      tipoIngresso: localAuth.cart.ticket,
-      eventId: localAuth.cart.eventId,
-      valorPago: localAuth.cart.finalPrice,
-      horaCompra: `${new Date().getHours()}:${new Date().getMinutes()}`,
-      createdAt: new Date(),
-      isValid: false,
       buyId: uniqueCode,
+      createdAt: new Date(),
+      eventId: ticketInfo.eventId,
+      horaCompra: formatedData,
+      isValid: true,
+      ticket,
+      tipoIngresso: ticketInfo.tktName,
+      valorPago: ticketInfo.tktPrice / 100,
     };
     try {
       const response = await api.post("/addPurchase", payload);
       if (response.status === 200) {
         sessionStorage.setItem("@AuthFirebase:uniqueCode", uniqueCode);
+        localStorage.setItem("@AuthFirebase:uniqueCode", uniqueCode);
         await Promise.all(
           ticket.map(async (ingresso) => {
             const ticketPayload = {
               ...ingresso,
-              isValid: false,
+              isValid: true,
               buyId: uniqueCode,
             };
-
             try {
               const response = await api.post("/addTicket", ticketPayload);
               if (response.status === 200) {
@@ -124,16 +149,8 @@ const Buy: React.FC = () => {
           })
         ).then(async () => {
           try {
-            const tktPriceDefault = localAuth.cart.finalPrice;
-            const tktPrice = Number(tktPriceDefault) * 100;
-
-            const response = await api.post("/createPayment", {
-              tktPrice,
-            });
-            if (response.data.status) {
-              sessionStorage.setItem("@AuthFirebase:uniqueCodeStatus", "true");
-              window.location = response.data.url;
-            }
+            localStorage.setItem("@AuthFirebase:uniqueCodeStatus", "true");
+            navigate("/ticket");
           } catch (error: any) {
             console.log(error);
             message.error("Verifique os dados e tente novamente!");
@@ -155,6 +172,14 @@ const Buy: React.FC = () => {
   const checkTicketData = () => {
     const currentTkt = ticket[ticket.length - 1];
     if (currentTkt.cpf && currentTkt.userName && currentTkt.userNumber) {
+      if (currentTkt.ticketColor === "") {
+        ticket[ticket.length - 1].ticketColor = eventData.ticketColor;
+        currentTkt.ticketColor = eventData.ticketColor;
+      }
+      if (currentTkt.title === "") {
+        ticket[ticket.length - 1].title = eventData.title;
+        currentTkt.title = eventData.title;
+      }
       return true;
     } else {
       return false;
@@ -163,14 +188,13 @@ const Buy: React.FC = () => {
 
   const handleAddField = () => {
     if (checkTicketData()) {
-      if (ticket.length < localAuth.cart.qtd) {
+      if (ticket.length < ticketInfo.tktQty) {
         setTicket([...ticket, defaultTicket]);
       } else {
-        const compradoLbl = document.getElementById("compradoLbl");
+        // const compradoLbl = document.getElementById("compradoLbl");
         const cardContainer = document.getElementById("cardContainer");
-        if (compradoLbl) {
-          compradoLbl.style.display = "none";
-        }
+
+        buy();
         if (cardContainer) {
           cardContainer.style.display = "flex";
         }
@@ -235,11 +259,7 @@ const Buy: React.FC = () => {
                         <>Cadastro para o ingresso: {index + 1}</>
                       )}
                     </Styled.ItemSpan>
-                    <Styled.FormContainer
-                      onClick={() => {
-                        setfocus("name");
-                      }}
-                    >
+                    <Styled.FormContainer>
                       <Styled.ItemSpan>Nome</Styled.ItemSpan>
                       <Styled.Input
                         type="text"
@@ -294,6 +314,9 @@ const Buy: React.FC = () => {
 
               <Styled.CardDiv id="cardContainer">
                 <Styled.MainContainer>
+                  <Styled.Title>Carregando...</Styled.Title>
+                </Styled.MainContainer>
+                {/* <Styled.MainContainer>
                   <Styled.Title>Dados de cartão de crédito</Styled.Title>
                 </Styled.MainContainer>
                 <Styled.FormContainer>
@@ -310,93 +333,7 @@ const Buy: React.FC = () => {
                       buy();
                     }}
                   />
-                </Styled.BtnContainerAux>
-                {/* <Styled.Aux>
-                  <Styled.FormContainer
-                    onClick={() => {
-                      setfocus("name");
-                    }}
-                  >
-                    <Input
-                      Label={"Nome (assim como no cartão de crédito)"}
-                      setValue={setName}
-                    ></Input>
-                  </Styled.FormContainer>
-
-                  <Styled.FormContainer
-                    onClick={() => {
-                      setfocus("cvc");
-                    }}
-                  >
-                    <InputMasked
-                      setValue={setCvc}
-                      Label={"CVV"}
-                      mask={"999"}
-                    ></InputMasked>
-                  </Styled.FormContainer>
-                </Styled.Aux>
-                <Styled.Aux>
-                  <Styled.FormContainer
-                    onClick={() => {
-                      setfocus("expiry");
-                    }}
-                  >
-                    <InputMasked
-                      Label={"Data de validade"}
-                      placeholder="MM/AAAA"
-                      mask={"99/2099"}
-                      setValue={setExpiry}
-                    ></InputMasked>
-                  </Styled.FormContainer>
-
-                  <Styled.FormContainer
-                    onClick={() => {
-                      setfocus("number");
-                    }}
-                  >
-                    <InputMasked
-                      Label={"Número (assim como no cartão de crédito)"}
-                      mask={"9999 9999 9999 9999"}
-                      setValue={setNumber}
-                    ></InputMasked>
-                  </Styled.FormContainer>
-                </Styled.Aux>
-
-                <Styled.Aux>
-                  <Styled.FormContainer>
-                    <Select
-                      label={"Tipo do cartão"}
-                      setValue={setTipo}
-                      options={["Crédito", "Débito"]}
-                    ></Select>
-                  </Styled.FormContainer>
-                  <Styled.FormContainer>
-                    <Styled.PriceContainer>
-                      <Styled.Price>Valor: R$ </Styled.Price>
-                      <Styled.Price>{localAuth.cart.finalPrice}</Styled.Price>
-                    </Styled.PriceContainer>
-                  </Styled.FormContainer>
-                </Styled.Aux>
-                <Styled.Aux>
-                  <div style={{ paddingBottom: "2vh" }}>
-                    <Cards
-                      number={number}
-                      name={name}
-                      expiry={expiry}
-                      cvc={cvc}
-                      preview={true}
-                      focused={focus}
-                    />
-                  </div>
-                </Styled.Aux>
-                <Styled.Aux>
-                  <ButtonPrimary
-                    bgColor={theme.colors.green.normal}
-                    label={"Finalizar compra"}
-                    action={buy}
-                  />
-                </Styled.Aux>
- */}
+                </Styled.BtnContainerAux> */}
               </Styled.CardDiv>
             </Styled.Container>
           </>

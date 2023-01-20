@@ -3,10 +3,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Adm from "./pages/adm";
 import Burn from "./pages/burnTicket";
 import Buy from "./pages/buyPage";
+import Contact from "./pages/contact";
 import CreateEvent from "./pages/createEvent";
 import Detail from "./pages/description";
 import Events from "./pages/events";
 import EventsInfo from "./pages/eventsInfo";
+import Fail from "./pages/failBuy";
 import GetTicket from "./pages/getTicketBack";
 import Home from "./pages/home";
 import Login from "./pages/login";
@@ -23,6 +25,8 @@ function RoutesList() {
         <Route path="/detalhes" element={<Detail />} />
         <Route path="/compra" element={<Buy />} />
         <Route path="/ticket" element={<TickeReady />} />
+        <Route path="/fail" element={<Fail />} />
+        <Route path="/contato" element={<Contact />} />
         <Route path="/recuperar-ingresso" element={<GetTicket />} />
         <Route path="/politica-privacidade" element={<Privacy />} />
         <Route path="/adm/login" element={<Login />} />
