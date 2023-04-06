@@ -40,11 +40,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // console.log("Opa");
-        // const tokenObj = sessionStorage.getItem("@AuthFirebase:accessToken");
-        // api.defaults.headers["Authorization"] = `${tokenObj}`;
         const response = await api.get("/getAllEvents");
-        // console.log(response);
         if (response.status === 200) {
           const parsed = response.data.map((event: any) => {
             return {
@@ -57,7 +53,6 @@ const Home: React.FC = () => {
         }
       } catch (error: any) {
         if (error.response.status === 401) {
-          // setUploading(false);
           message.error("Sessão expirada, faça login novamente!");
           setTimeout(() => {
             navigate("/adm/login");

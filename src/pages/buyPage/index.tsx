@@ -125,48 +125,57 @@ const Buy: React.FC = () => {
       tipoIngresso: ticketInfo.tktName,
       valorPago: ticketInfo.tktPrice / 100,
     };
-    try {
-      const response = await api.post("/addPurchase", payload);
-      if (response.status === 200) {
-        sessionStorage.setItem("@AuthFirebase:uniqueCode", uniqueCode);
-        localStorage.setItem("@AuthFirebase:uniqueCode", uniqueCode);
-        await Promise.all(
-          ticket.map(async (ingresso) => {
-            const ticketPayload = {
-              ...ingresso,
-              isValid: true,
-              buyId: uniqueCode,
-            };
-            try {
-              const response = await api.post("/addTicket", ticketPayload);
-              if (response.status === 200) {
-                return true;
-              }
-            } catch (error: any) {
-              message.error("Verifique os dados e tente novamente!");
-              return false;
-            }
-          })
-        ).then(async () => {
-          try {
-            localStorage.setItem("@AuthFirebase:uniqueCodeStatus", "true");
-            navigate("/ticket");
-          } catch (error: any) {
-            console.log(error);
-            message.error("Verifique os dados e tente novamente!");
-            return false;
-          }
-        });
-      }
-    } catch (error: any) {
-      if (error.response.status === 401) {
-        message.error("Sessão expirada, faça login novamente!");
-        setTimeout(() => {
-          navigate("/adm/login");
-        }, 4000);
-      }
-      message.error("Verifique os dados e tente novamente!");
-    }
+    // <script type='text/javascript'>
+    //   var s=document.createElement('script');
+    //   s.type='text/javascript';
+    //   var v=parseInt(Math.random()*1000000);
+    //   s.src='https://sandbox.gerencianet.com.br/v1/cdn/lightbox/ee1ca595202d54ef985f1e16cb492881/'+v;
+    //   s.async=false;s.id='ee1ca595202d54ef985f1e16cb492881';
+    //   if(!document.getElementById('ee1ca595202d54ef985f1e16cb492881')){document.getElementsByTagName('head')[0].appendChild(s);}
+    //   ;$gn={validForm:true,processed:false,done:{},ready:function(fn){$gn.done=fn;}};</script>
+
+    // try {
+    //   const response = await api.post("/addPurchase", payload);
+    //   if (response.status === 200) {
+    //     sessionStorage.setItem("@AuthFirebase:uniqueCode", uniqueCode);
+    //     localStorage.setItem("@AuthFirebase:uniqueCode", uniqueCode);
+    //     await Promise.all(
+    //       ticket.map(async (ingresso) => {
+    //         const ticketPayload = {
+    //           ...ingresso,
+    //           isValid: true,
+    //           buyId: uniqueCode,
+    //         };
+    //         try {
+    //           const response = await api.post("/addTicket", ticketPayload);
+    //           if (response.status === 200) {
+    //             return true;
+    //           }
+    //         } catch (error: any) {
+    //           message.error("Verifique os dados e tente novamente!");
+    //           return false;
+    //         }
+    //       })
+    //     ).then(async () => {
+    //       try {
+    //         localStorage.setItem("@AuthFirebase:uniqueCodeStatus", "true");
+    //         navigate("/ticket");
+    //       } catch (error: any) {
+    //         console.log(error);
+    //         message.error("Verifique os dados e tente novamente!");
+    //         return false;
+    //       }
+    //     });
+    //   }
+    // } catch (error: any) {
+    //   if (error.response.status === 401) {
+    //     message.error("Sessão expirada, faça login novamente!");
+    //     setTimeout(() => {
+    //       navigate("/adm/login");
+    //     }, 4000);
+    //   }
+    //   message.error("Verifique os dados e tente novamente!");
+    // }
   };
 
   const checkTicketData = () => {

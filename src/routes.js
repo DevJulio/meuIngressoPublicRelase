@@ -12,6 +12,7 @@ import Fail from "./pages/failBuy";
 import GetTicket from "./pages/getTicketBack";
 import Home from "./pages/home";
 import Login from "./pages/login";
+import Manutencao from "./pages/manutencao";
 import Privacy from "./pages/privacy";
 import PurchaseList from "./pages/purchaseList";
 import TickeReady from "./pages/ticket";
@@ -22,10 +23,12 @@ function RoutesList() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Manutencao />} /> */}
         <Route path="/detalhes" element={<Detail />} />
         <Route path="/compra" element={<Buy />} />
         <Route path="/ticket" element={<TickeReady />} />
         <Route path="/fail" element={<Fail />} />
+        <Route path="/Manutencao" element={<Manutencao />} />
         <Route path="/contato" element={<Contact />} />
         <Route path="/recuperar-ingresso" element={<GetTicket />} />
         <Route path="/politica-privacidade" element={<Privacy />} />

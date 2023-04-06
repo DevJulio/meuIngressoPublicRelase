@@ -31,6 +31,9 @@ export const RowContainer = styled.div`
   text-align-last: center;
   align-items: center;
   margin-bottom: 3vh;
+  @media ${({ theme }) => theme.devices.tablet} {
+    flex-direction: column;
+  }
 `;
 export const IconContainer = styled.div`
   display: flex;

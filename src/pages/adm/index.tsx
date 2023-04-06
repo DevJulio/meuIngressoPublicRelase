@@ -22,6 +22,7 @@ const Adm: React.FC = () => {
   const user = getStorage("@AuthFirebase:user");
 
   useEffect(() => {
+    console.log(user);
     if (!user.email) {
       navigate("/adm/login");
     }
@@ -61,7 +62,7 @@ const Adm: React.FC = () => {
               outsideColor={theme.colors.orange.palete}
               children={
                 <>
-                  <Styled.Container>
+                  {/* <Styled.Container>
                     <Styled.TitleContainer>
                       <Styled.Title>logado como:</Styled.Title>
                       <Styled.Title>{user.email}</Styled.Title>
@@ -102,7 +103,7 @@ const Adm: React.FC = () => {
                         }}
                       />
                     </Styled.BtnsContainer>
-                  </Styled.Container>
+                  </Styled.Container> */}
                 </>
               }
               deskTopChildren={

@@ -54,7 +54,7 @@ const IngressoReady: React.FC<Props> = ({ tkt }) => {
     }
   }, []);
   // TODO: Alterar link
-  const value = `http://meu-ingresso.com/adm/liberar-entrada?id=${tkt.id}`;
+  const value = `https://meu-ingresso.com/adm/liberar-entrada?id=${tkt.id}`;
 
   function downloadURI(uri: string, name: string) {
     const link = document.createElement("a");

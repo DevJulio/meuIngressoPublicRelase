@@ -222,6 +222,15 @@ display: none;
   }
 `
 
+export const PaypalContainer = styled.div`
+display: flex;
+flex-direction: column;
+width: 95%;
+// overflow-x: scroll;
+ background-color: ${({ theme }) => theme.colors.orange.palete};
+ margin-bottom: 27vh;
+`
+
 export const DesktopContainer = styled.div`
 display: flex;
 flex-direction: column;

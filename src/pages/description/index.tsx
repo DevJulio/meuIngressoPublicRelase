@@ -16,6 +16,7 @@ import api from "../../services/api";
 import { Button, message } from "antd";
 import { AuthContext } from "../../contexts/auth";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 const Detail: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
@@ -23,6 +24,7 @@ const Detail: React.FC = () => {
   const [ticketIndex, setTicketIndex] = useState<any>(0);
   const [event, setEvent] = useState<TCardProps>();
   const [count, setCount] = useState(1);
+  const [paypal, setPaypal] = useState<boolean>(false);
 
   const localAuth: any = useContext(AuthContext);
   const eventId = localStorage.getItem("eventId");
@@ -32,6 +34,9 @@ const Detail: React.FC = () => {
   };
   const handleCloseQtd = () => {
     setQtdModal(false);
+  };
+  const handleClosePaypal = () => {
+    setPaypal(false);
   };
 
   const navigate = useNavigate();
@@ -58,6 +63,48 @@ const Detail: React.FC = () => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const buyAux = () => {
+    // const script = document.createElement("script");
+    // const v = Number(Math.random() * 1000000);
+    // script.type = "text/javascript";
+    // script.src =
+    //   "https://sandbox.gerencianet.com.br/v1/cdn/lightbox/ee1ca595202d54ef985f1e16cb492881/" +
+    //   v;
+    // script.async = false;
+    // script.id = "ee1ca595202d54ef985f1e16cb492881";
+    // if (!document.getElementById("ee1ca595202d54ef985f1e16cb492881")) {
+    //   document.getElementsByTagName("head")[0].appendChild(script);
+    // }
+    // // document.body.appendChild(script);
+    // return () => {
+    //   document.body.removeChild(script);
+    // };
+    //   <script>
+    //   $gn.ready(function(obj){
+    //     var payment_forms = ["credit_card", "banking_billet","pix"];
+    //         obj.lightbox(payment_forms);
+    //     obj.jq('#button_lightbox').click(function(evt) {
+    //       var data = {
+    //         items: [
+    //           {
+    //             name: 'Item 1', // nome do item, produto ou serviço
+    //             value: 12000 // valor (12000 = R$ 120,00) (Obs: É possível a criação de itens com valores negativos. Porém, o valor total da fatura deve ser superior ao valor mínimo para geração de transações.)
+    //           },
+    //           {
+    //             name: 'Item 2', // nome do item, produto ou serviço
+    //             value: 4000, // valor (4000 = R$ 40,00)
+    //             amount: 1 // quantidade
+    //           }
+    //         ],
+    //         shippingCosts: 3560,
+    //         actionForm: 'http://your_domain/your_backend_url'
+    //       };
+    //       obj.show(data);
+    //     });
+    //   });
+    // </script>
+  };
 
   const formatedTime =
     new Date(event ? event.time.toString() : "00:00")
@@ -126,7 +173,6 @@ const Detail: React.FC = () => {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "");
       const eventId = payload.eventId;
-
       const response = await api.post("/createPayment", {
         tktPrice,
         tktType,
@@ -189,9 +235,9 @@ const Detail: React.FC = () => {
                     ticketName: event.prices[ticketIndex].title,
                   };
                   localAuth.addCart(payload);
-                  //TODO: DESCOMENTAR
-                  // navigate("/compra");
-                  buy(payload);
+                  console.log(process.env.REACT_APP_PAYPAL);
+                  setPaypal(true);
+                  // buy(payload);
                 }}
               />
               <ButtonPrimary
@@ -256,7 +302,7 @@ const Detail: React.FC = () => {
           outsideColor={theme.colors.orange.palete}
           children={
             <>
-              {event && (
+              {event && !paypal && (
                 <Styled.Container>
                   <Styled.Banner src={event.adicionalPictureUrl} />
                   <Styled.ContainerData>
@@ -352,6 +398,50 @@ const Detail: React.FC = () => {
                     </>
                   )}
                 </Styled.Container>
+              )}
+              {paypal && (
+                <>
+                  <Styled.PaypalContainer>
+                    <Styled.Title style={{ color: "white" }}>
+                      Dados de pagamento{" "}
+                    </Styled.Title>
+                    <PayPalScriptProvider
+                      options={{
+                        "client-id": process.env.REACT_APP_PAYPAL
+                          ? process.env.REACT_APP_PAYPAL
+                          : "",
+                      }}
+                    >
+                      <PayPalButtons
+                        createOrder={(data, actions) => {
+                          return actions.order.create({
+                            purchase_units: [
+                              {
+                                description: "Entrada para Muladeiros 2023",
+                                amount: {
+                                  value: "13",
+                                  currency_code: "BRL",
+                                },
+                              },
+                            ],
+                          });
+                        }}
+                        onApprove={async (data, actions) => {
+                          if (actions && actions.order) {
+                            const details = await actions.order.capture();
+                            if (details.payer.name) {
+                              const name = details.payer.name.given_name;
+                              alert("Transaction completed by " + name);
+                            }
+                          }
+                        }}
+                        onError={() => {
+                          navigate("/fail");
+                        }}
+                      />
+                    </PayPalScriptProvider>
+                  </Styled.PaypalContainer>
+                </>
               )}
             </>
           }
